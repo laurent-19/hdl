@@ -1,0 +1,66 @@
+FMC_pin    FMC_port       Schematic_name   System_top_name IOSTANDARD Termination
+
+# cn0506_rgmii
+
+H4         CLK0_M2C_P     #N/A             ref_clk_125_p     LVDS       #N/A
+H5         CLK0_M2C_N     #N/A             ref_clk_125_n     LVDS       #N/A
+
+H11        LA04_N         #N/A             rgmii_txc_a       LVCMOS18   SLEW FAST
+G6         LA00_CC_P      #N/A             rgmii_rxc_a       LVCMOS18   #N/A
+
+G28        LA25_N         #N/A             rgmii_txc_b       LVCMOS18   SLEW FAST
+C22        LA18_CC_P      #N/A             rgmii_rxc_b       LVCMOS18   #N/A
+
+D14        LA09_P         #N/A             {rgmii_txd_a[0]}  LVCMOS18   SLEW FAST
+D15        LA09_N         #N/A             {rgmii_txd_a[1]}  LVCMOS18   SLEW FAST
+C10        LA06_P         #N/A             {rgmii_txd_a[2]}  LVCMOS18   SLEW FAST
+C11        LA06_N         #N/A             {rgmii_txd_a[3]}  LVCMOS18   SLEW FAST
+H7         LA02_P         #N/A             {rgmii_rxd_a[0]}  LVCMOS18   #N/A
+H8         LA02_N         #N/A             {rgmii_rxd_a[1]}  LVCMOS18   #N/A
+G9         LA03_P         #N/A             {rgmii_rxd_a[2]}  LVCMOS18   #N/A
+G10        LA03_N         #N/A             {rgmii_rxd_a[3]}  LVCMOS18   #N/A
+
+H25        LA21_P         #N/A             {rgmii_txd_b[0]}  LVCMOS18   SLEW FAST
+H26        LA21_N         #N/A             {rgmii_txd_b[1]}  LVCMOS18   SLEW FAST
+G24        LA22_P         #N/A             {rgmii_txd_b[2]}  LVCMOS18   SLEW FAST
+G25        LA22_N         #N/A             {rgmii_txd_b[3]}  LVCMOS18   SLEW FAST
+H22        LA19_P         #N/A             {rgmii_rxd_b[0]}  LVCMOS18   #N/A
+H23        LA19_N         #N/A             {rgmii_rxd_b[1]}  LVCMOS18   #N/A
+G21        LA20_P         #N/A             {rgmii_rxd_b[2]}  LVCMOS18   #N/A
+G22        LA20_N         #N/A             {rgmii_rxd_b[3]}  LVCMOS18   #N/A
+
+H19        LA15_P         #N/A             reset_a           LVCMOS18   #N/A
+H20        LA15_N         #N/A             reset_b           LVCMOS18   #N/A
+
+H13        LA07_P         #N/A             rgmii_tx_ctrl_a   LVCMOS18   SLEW FAST
+H28        LA24_P         #N/A             rgmii_tx_ctrl_b   LVCMOS18   SLEW FAST
+
+H14        LA07_N         #N/A             rgmii_rx_ctrl_a   LVCMOS18   #N/A
+H29        LA24_N         #N/A             rgmii_rx_ctrl_b   LVCMOS18   #N/A
+
+G13        LA08_N         #N/A             int_n_a           LVCMOS18   #N/A
+D24        LA23_N         #N/A             int_n_b           LVCMOS18   #N/A
+
+H16        LA11_P         #N/A             mdio_fmc_a        LVCMOS18   PULLUP TRUE
+H31        LA28_P         #N/A             mdio_fmc_b        LVCMOS18   PULLUP TRUE
+
+H17        LA11_N         #N/A             mdc_fmc_a         LVCMOS18   #N/A
+H32        LA28_N         #N/A             mdc_fmc_b         LVCMOS18   #N/A
+
+G12        LA08_P         #N/A             led_0_a           LVCMOS18   #N/A
+D23        LA23_P         #N/A             led_0_b           LVCMOS18   #N/A
+
+D18        LA13_N         #N/A             led_al_a_c2m      LVCMOS18   #N/A
+D17        LA13_P         #N/A             led_al_c_c2m      LVCMOS18   #N/A
+
+G16        LA12_N         #N/A             led_ar_a_c2m      LVCMOS18   #N/A
+G15        LA12_P         #N/A             led_ar_c_c2m      LVCMOS18   #N/A
+
+D27        LA26_N         #N/A             led_bl_a_c2m      LVCMOS18   #N/A
+D26        LA26_P         #N/A             led_bl_c_c2m      LVCMOS18   #N/A
+
+G19        LA16_N         #N/A             led_br_a_c2m      LVCMOS18   #N/A
+G18        LA16_P         #N/A             led_br_c_c2m      LVCMOS18   #N/A
+
+H10        LA04_P         #N/A             link_st_a         LVCMOS18   #N/A
+G27        LA25_P         #N/A             link_st_b         LVCMOS18   #N/A
