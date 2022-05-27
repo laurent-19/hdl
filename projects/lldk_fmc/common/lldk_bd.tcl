@@ -85,7 +85,7 @@ set hier_spi_engine_1 spi_ad3552r_1
 spi_engine_create $hier_spi_engine_0 $data_width $async_spi_clk $num_cs $num_sdi $num_sdo $sdi_delay
 spi_engine_create $hier_spi_engine_1 $data_width $async_spi_clk $num_cs $num_sdi $num_sdo $sdi_delay
 
-ad_ip_instance ad_ip_jesd204_tpl_dac spi_dds_0
+ad_ip_instance axi_dds spi_dds_0
 ad_connect spi_clk spi_dds_0/spi_clk
 
 ad_ip_instance axi_clkgen spi_clkgen
@@ -157,7 +157,7 @@ ad_connect axis_interconnect_0/S01_AXIS_ARESETN spi_resetn
 
 #dac1
 
-ad_ip_instance ad_ip_jesd204_tpl_dac spi_dds_1
+ad_ip_instance axi_dds spi_dds_1
 ad_connect spi_clk spi_dds_1/spi_clk
 
 ad_ip_instance axi_dmac axi_dac_1_dma
