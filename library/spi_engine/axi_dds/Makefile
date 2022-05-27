@@ -4,7 +4,7 @@
 ## Auto-generated, do not modify!
 ####################################################################################
 
-LIBRARY_NAME := ad_ip_jesd204_tpl_dac
+LIBRARY_NAME := axi_dds
 
 GENERIC_DEPS += ../../common/ad_dds.v
 GENERIC_DEPS += ../../common/ad_dds_1.v
@@ -35,6 +35,6 @@ XILINX_DEPS += ../../xilinx/common/ad_rst_constr.xdc
 XILINX_DEPS += ../../xilinx/common/up_clock_mon_constr.xdc
 XILINX_DEPS += ../../xilinx/common/up_xfer_cntrl_constr.xdc
 XILINX_DEPS += ../../xilinx/common/up_xfer_status_constr.xdc
-XILINX_DEPS += ad_ip_jesd204_tpl_dac_ip.tcl
+XILINX_DEPS += axi_dds_ip.tcl
 
 include ../../scripts/library.mk

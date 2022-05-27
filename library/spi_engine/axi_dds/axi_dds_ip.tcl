@@ -24,8 +24,8 @@
 source ../../scripts/adi_env.tcl
 source $ad_hdl_dir/library/scripts/adi_ip_xilinx.tcl
 
-adi_ip_create ad_ip_jesd204_tpl_dac
-adi_ip_files ad_ip_jesd204_tpl_dac [list \
+adi_ip_create axi_dds
+adi_ip_files axi_dds [list \
   "$ad_hdl_dir/library/xilinx/common/ad_mul.v" \
   "$ad_hdl_dir/library/common/ad_mux.v" \
   "$ad_hdl_dir/library/common/ad_mux_core.v" \
@@ -54,10 +54,10 @@ adi_ip_files ad_ip_jesd204_tpl_dac [list \
   "ad_ip_jesd204_tpl_dac_pn.v" \
   "ad_ip_jesd204_tpl_dac.v" ]
 
-adi_ip_properties ad_ip_jesd204_tpl_dac
+adi_ip_properties axi_dds
 #adi_ip_ttcl axi_spi_engine "spi_engine_offload_constr.ttcl"
 
-set_property company_url {https://wiki.analog.com/resources/fpga/peripherals/jesd204/jesd204_tpl_dac} [ipx::current_core]
+set_property company_url {https://wiki.analog.com/resources/fpga/peripherals} [ipx::current_core]
 
 #ipx::remove_all_bus_interface [ipx::current_core]
 
