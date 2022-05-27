@@ -13,7 +13,7 @@ set hier_spi_engine spi_ad3552r_dac
 
 spi_engine_create $hier_spi_engine $data_width $async_spi_clk $num_cs $num_sdi $num_sdo $sdi_delay
 
-ad_ip_instance ad_ip_jesd204_tpl_dac spi_dds
+ad_ip_instance axi_dds spi_dds
 ad_connect spi_clk spi_dds/spi_clk
 
 #ad_connect $hier_spi_engine/offload/offload_sdo spi_dds/m_axis_dds
