@@ -87,7 +87,6 @@ module ad7768_if (
   reg     [  2:0]   adc_status_2 = 'd0;
   reg     [  2:0]   adc_status_1 = 'd0;
   reg     [  2:0]   adc_status_0 = 'd0;
-  reg     [  2:0]   adc_seq = 'd0;
   reg     [  4:0]   adc_status = 'd0;
   reg     [ 63:0]   adc_crc_8 = 'd0;
   reg     [  7:0]   adc_crc_mismatch_int = 'd0;
@@ -179,7 +178,7 @@ module ad7768_if (
   // function (crc)
 
   function  [ 7:0]  crc8;
-    input   [23:0]  din;
+    input   [95:0]  din;
     input   [ 7:0]  cin;
     reg     [ 7:0]  cout;
     begin
@@ -291,77 +290,32 @@ module ad7768_if (
     end
   end
 
-  // data & status
-
   always @(posedge adc_clk) begin
-    adc_valid_d <= adc_valid;
-  end
-
-  assign adc_sync = adc_valid & ~adc_valid_d & sync_ss;
-
-  always @(posedge adc_clk) begin
-    if (adc_ready_in_s) begin
-      sync_ss <= 1'h1;
-    end else if (adc_sync) begin
-      sync_ss <= 1'h0;
-    end
-  end
-
-
-  always @(posedge adc_clk) begin
-    adc_valid <= adc_valid_int & adc_enable_int;
-    adc_data <= {{8{adc_data_int[23]}}, adc_data_int[23:0]};
-    if (adc_ch_valid_0 == 1'b1) begin
-      adc_data_0 <= adc_ch_data_0;
-    end
-    if (adc_ch_valid_1 == 1'b1) begin
-      adc_data_1 <= adc_ch_data_1;
-    end
-    if (adc_ch_valid_2 == 1'b1) begin
-      adc_data_2 <= adc_ch_data_2;
-    end
-    if (adc_ch_valid_3 == 1'b1) begin
-      adc_data_3 <= adc_ch_data_3;
-    end
-    if (adc_ch_valid_4 == 1'b1) begin
-      adc_data_4 <= adc_ch_data_4;
-    end
-    if (adc_ch_valid_5 == 1'b1) begin
-      adc_data_5 <= adc_ch_data_5;
-    end
-    if (adc_ch_valid_6 == 1'b1) begin
-      adc_data_6 <= adc_ch_data_6;
-    end
-    if (adc_ch_valid_7 == 1'b1) begin
-      adc_data_7 <= adc_ch_data_7;
-    end
-    adc_seq <= adc_seq_int;
-    adc_valid_0 <= adc_ch_valid_7;
-    adc_valid_1 <= adc_ch_valid_7;
-    adc_valid_2 <= adc_ch_valid_7;
-    adc_valid_3 <= adc_ch_valid_7;
-    adc_valid_4 <= adc_ch_valid_7;
-    adc_valid_5 <= adc_ch_valid_7;
-    adc_valid_6 <= adc_ch_valid_7;
-    adc_valid_7 <= adc_ch_valid_7;
-    adc_valid_pp <= ;
-              
-    if ((adc_crc_enable == 1'b1) && (adc_crc_scnt_int == 4'd0)) begin
-      adc_status[4] <= adc_crc_mismatch_8[7] & adc_enable_int;
+    adc_data <= {{8{adc_data_int[23]}}, adc_data_int[23:0]};           
+    if ((adc_crc_enable == 1'b1) && (adc_crc_scnt_8 == 4'd0)) begin
+      adc_status[4] <= adc_crc_mismatch_8 & adc_crc_valid_p;
       adc_status[3] <= 1'b0;
       adc_status[2] <= 1'b0;
       adc_status[1] <= 1'b0;
       adc_status[0] <= adc_seq_foos;
     end else begin
-      adc_status[4] <= adc_crc_mismatch_8[7] & adc_enable_int;
-      adc_status[3] <= adc_data_int[30] & adc_enable_int;
-      adc_status[2] <= adc_data_int[27] & adc_enable_int;
-      adc_status[1] <= adc_data_int[31] & adc_enable_int;
+      adc_status[4] <= adc_crc_mismatch_8 & adc_crc_valid_p;
+      adc_status[3] <= adc_data_int[30] & adc_valid;
+      adc_status[2] <= adc_data_int[27] & adc_valid;
+      adc_status[1] <= adc_data_int[31] & adc_valid;
       adc_status[0] <= adc_seq_foos;
     end
   end
 
-
+    always @(posedge adc_clk) begin
+  
+    adc_data_8 <= adc_data_0_s | adc_data_1_s | adc_data_2_s | adc_data_3_s |
+                  adc_data_4_s | adc_data_5_s | adc_data_6_s | adc_data_7_s;
+    
+    adc_crc_mismatch_8 <= adc_crc_mismatch_s_0 | adc_crc_mismatch_s_1 | adc_crc_mismatch_s_2 |
+                          adc_crc_mismatch_s_3 | adc_crc_mismatch_s_4 | adc_crc_mismatch_s_5 |
+                          adc_crc_mismatch_s_6 | adc_crc_mismatch_s_7;
+  end
 
   // CRC check
 
@@ -402,7 +356,6 @@ module ad7768_if (
    adc_crc_ch_mismatch_s[6] <= (adc_valid_s_d == 1'b1 ) ? adc_crc_mismatch_s_6 : adc_crc_ch_mismatch_s[6];
    adc_crc_ch_mismatch_s[7] <= (adc_valid_s_d == 1'b1 ) ? adc_crc_mismatch_s_7 : adc_crc_ch_mismatch_s[7];
   end
-
 
   // numbers of samples count 
 
@@ -464,7 +417,6 @@ always @(posedge adc_clk) begin
 
 end
 
-
   always @(posedge adc_clk) begin
     if (adc_crc_valid_p == 1'b0) begin
       adc_crc_read_data_0 <=adc_data_0_s[31:24];
@@ -475,7 +427,7 @@ end
       adc_crc_read_data_5 <=adc_data_5_s[31:24];
       adc_crc_read_data_6 <=adc_data_6_s[31:24];
       adc_crc_read_data_7 <=adc_data_7_s[31:24];
-    end else if (adc_valid_8 == 1'b1) begin
+    end else begin
       adc_crc_read_data_0 <=8'b0;
       adc_crc_read_data_1 <=8'b0;
       adc_crc_read_data_2 <=8'b0;
