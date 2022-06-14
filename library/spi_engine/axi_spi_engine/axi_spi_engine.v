@@ -123,6 +123,7 @@ module axi_spi_engine #(
   output offload0_sdo_wr_en,
   output [(DATA_WIDTH-1):0] offload0_sdo_wr_data,
 
+  output offload0_axis_sw,
   output offload0_mem_reset,
   output offload0_enable,
   input offload0_enabled,
@@ -296,6 +297,7 @@ module axi_spi_engine #(
   end
 
   reg offload0_enable_reg;
+  reg offload0_axis_sw_reg;
   reg offload0_mem_reset_reg;
   wire offload0_enabled_s;
 
@@ -305,12 +307,14 @@ module axi_spi_engine #(
       up_irq_mask <= 'h00;
       offload0_enable_reg <= 1'b0;
       offload0_mem_reset_reg <= 1'b0;
+      offload0_axis_sw_reg <= 1'b0;
     end else begin
       if (up_wreq_s) begin
         case (up_waddr_s)
           8'h20: up_irq_mask <= up_wdata_s;
           8'h40: offload0_enable_reg <= up_wdata_s[0];
           8'h42: offload0_mem_reset_reg <= up_wdata_s[0];
+          8'h43: offload0_axis_sw_reg <= up_wdata_s[0];
         endcase
       end
     end
@@ -343,6 +347,7 @@ module axi_spi_engine #(
       8'h3c: up_rdata_ff <= sdi_fifo_out_data; /* PEEK register */
       8'h40: up_rdata_ff <= {offload0_enable_reg};
       8'h41: up_rdata_ff <= {offload0_enabled_s};
+      8'h43: up_rdata_ff <= {offload0_axis_sw_reg};
       8'h80: up_rdata_ff <= CFG_INFO_0;
       8'h81: up_rdata_ff <= CFG_INFO_1;
       8'h82: up_rdata_ff <= CFG_INFO_2;
@@ -612,13 +617,13 @@ module axi_spi_engine #(
   endgenerate
 
   sync_bits #(
-    .NUM_OF_BITS (1),
+    .NUM_OF_BITS (3),
     .ASYNC_CLK (ASYNC_SPI_CLK)
-  ) i_offload_enable_sync (
-    .in_bits (offload0_enable_reg),
+  ) i_offload_mem_reset_sync (
+    .in_bits ({offload0_mem_reset_reg, offload0_enable_reg, offload0_axis_sw_reg}),
     .out_resetn (spi_resetn),
     .out_clk (spi_clk),
-    .out_bits (offload0_enable));
+    .out_bits ({offload0_mem_reset, offload0_enable, offload0_axis_sw}));
 
   sync_bits #(
     .NUM_OF_BITS (1),
@@ -630,15 +635,6 @@ module axi_spi_engine #(
     .out_bits (offload0_enabled_s));
 
   sync_bits #(
-    .NUM_OF_BITS (1),
-    .ASYNC_CLK (ASYNC_SPI_CLK)
-  ) i_offload_mem_reset_sync (
-    .in_bits (offload0_mem_reset_reg),
-    .out_resetn (spi_resetn),
-    .out_clk (spi_clk),
-    .out_bits (offload0_mem_reset));
-
-  sync_bits #(
     .NUM_OF_BITS (3),
     .ASYNC_CLK (ASYNC_SPI_CLK)
   ) i_fifo_status (
@@ -648,3 +644,4 @@ module axi_spi_engine #(
     .out_bits ({up_cmd_fifo_almost_empty, up_sdi_fifo_almost_full, up_sdo_fifo_almost_empty}));
 
 endmodule
+

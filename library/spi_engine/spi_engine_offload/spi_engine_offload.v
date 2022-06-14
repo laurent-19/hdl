@@ -53,6 +53,7 @@ module spi_engine_offload #(
   input [(DATA_WIDTH-1):0] ctrl_sdo_wr_data,
 
   input ctrl_enable,
+  input ctrl_axis_sw,
   output ctrl_enabled,
   input ctrl_mem_reset,
 
@@ -84,10 +85,14 @@ module spi_engine_offload #(
   output offload_sdi_valid,
   input offload_sdi_ready,
   output [(NUM_OF_SDI * DATA_WIDTH-1):0] offload_sdi_data,
-  
-  input offload_sdo_valid,
-  output offload_sdo_ready,
-  input [(DATA_WIDTH-1):0] offload_sdo_data
+
+  input offload_sdo_valid_0,
+  output offload_sdo_ready_0,
+  input [(DATA_WIDTH-1):0] offload_sdo_data_0,
+
+  input offload_sdo_valid_1,
+  output offload_sdo_ready_1,
+  input [(DATA_WIDTH-1):0] offload_sdo_data_1
 );
 
 reg spi_active = 1'b0;
@@ -105,6 +110,16 @@ wire [15:0] cmd_int_s;
 wire [CMD_MEM_ADDRESS_WIDTH-1:0] spi_cmd_rd_addr_next;
 wire spi_enable;
 wire mem_empty;
+wire offload_sdo_valid;
+wire offload_sdo_ready;
+wire [(DATA_WIDTH-1):0] offload_sdo_data;
+
+assign offload_sdo_ready_0 = (ctrl_axis_sw ? 0 : offload_sdo_ready);
+assign offload_sdo_ready_1 = (ctrl_axis_sw ? offload_sdo_ready : 0);
+
+assign offload_sdo_valid = (ctrl_axis_sw ? offload_sdo_valid_1 : offload_sdo_valid_0);
+assign offload_sdo_data = (ctrl_axis_sw ? offload_sdo_data_1 : offload_sdo_data_0);
+
 
 assign mem_empty = (ctrl_sdo_wr_addr_1 == 'h0 ? 1 : 0);
 assign cmd_valid = spi_active;
@@ -266,7 +281,6 @@ always @(posedge spi_clk) begin
       // the DMA is enabled
       if (trigger_s == 1'b1 && spi_enable == 1'b1 && offload_sdi_ready == 1'b1) begin
         spi_active <= 1'b1;
-        ctrl_sdo_wr_addr_1 <= ctrl_sdo_wr_addr;
       end
     end else if (cmd_ready == 1'b1 && spi_cmd_rd_addr_next == ctrl_cmd_wr_addr) begin
       spi_active <= 1'b0;
@@ -310,10 +324,13 @@ always @(posedge ctrl_clk) begin
 end
 
 always @(posedge ctrl_clk) begin
-  if (ctrl_mem_reset == 1'b1)
-    ctrl_sdo_wr_addr_1 <= 'h00;
-  else if (sdo_data_ready == 1'b1 && mem_empty == 0)
+  if (ctrl_mem_reset == 1'b1) begin
+    ctrl_sdo_wr_addr_1 <= 'h0;
+  end else if (trigger_s == 1'b1) begin
+    ctrl_sdo_wr_addr_1 <= ctrl_sdo_wr_addr;
+  end else if (sdo_data_ready == 1'b1 && mem_empty == 0) begin
     ctrl_sdo_wr_addr_1 <= ctrl_sdo_wr_addr_1 - 1'b1;
+  end
 end
 
 always @(posedge ctrl_clk) begin

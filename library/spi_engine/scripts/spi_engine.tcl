@@ -15,7 +15,8 @@ proc spi_engine_create {{name "spi_engine"} {data_width 32} {async_spi_clk 1} {n
   create_bd_pin -dir O irq
   create_bd_intf_pin -mode Master -vlnv analog.com:interface:spi_master_rtl:1.0 m_spi
   create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:axis_rtl:1.0 m_axis_sample
-  create_bd_intf_pin -mode Slave -vlnv xilinx.com:interface:axis_rtl:1.0 s_axis_sample
+  create_bd_intf_pin -mode Slave -vlnv xilinx.com:interface:axis_rtl:1.0 s_axis_sample_0
+  create_bd_intf_pin -mode Slave -vlnv xilinx.com:interface:axis_rtl:1.0 s_axis_sample_1
 
   set execution "${name}_execution"
   set axi_regmap "${name}_axi_regmap"
@@ -51,7 +52,8 @@ proc spi_engine_create {{name "spi_engine"} {data_width 32} {async_spi_clk 1} {n
   ad_connect $axi_regmap/spi_engine_ctrl $interconnect/s1_ctrl
   ad_connect $interconnect/m_ctrl $execution/ctrl
   ad_connect $offload/offload_sdi m_axis_sample
-  ad_connect $offload/offload_sdo s_axis_sample
+  ad_connect $offload/offload_sdo_0 s_axis_sample_0
+  ad_connect $offload/offload_sdo_1 s_axis_sample_1
   ad_connect $offload/trigger trigger
 
   ad_connect $execution/spi m_spi
