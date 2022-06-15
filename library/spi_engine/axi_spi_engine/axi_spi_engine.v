@@ -347,7 +347,6 @@ module axi_spi_engine #(
       8'h3c: up_rdata_ff <= sdi_fifo_out_data; /* PEEK register */
       8'h40: up_rdata_ff <= {offload0_enable_reg};
       8'h41: up_rdata_ff <= {offload0_enabled_s};
-      8'h43: up_rdata_ff <= {offload0_axis_sw_reg};
       8'h80: up_rdata_ff <= CFG_INFO_0;
       8'h81: up_rdata_ff <= CFG_INFO_1;
       8'h82: up_rdata_ff <= CFG_INFO_2;
