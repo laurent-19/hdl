@@ -182,24 +182,6 @@ module system_top (
     .dio_o (iic_mux_sda_i_s),
     .dio_p (iic_mux_sda));
 
-  ad7768_if i_ad7768_if (
-    .clk_in (clk_in),
-    .ready_in (ready_in),
-    .data_in (data_in),
-    .adc_clk (adc_clk),
-    .adc_valid (adc_valid),
-    .adc_valid_pp (adc_valid_pp),
-    .adc_sync (adc_sync),
-    .adc_data (adc_data),
-    .adc_data_0 (adc_data_0),
-    .adc_data_1 (adc_data_1),
-    .adc_data_2 (adc_data_2),
-    .adc_data_3 (adc_data_3),
-    .adc_data_4 (adc_data_4),
-    .adc_data_5 (adc_data_5),
-    .adc_data_6 (adc_data_6),
-    .adc_data_7 (adc_data_7),
-    );
 
   system_wrapper i_system_wrapper (
     .clk_in (clk_in),
@@ -217,9 +199,6 @@ module system_top (
     .adc_gpio_1_i (adc_gpio_i[63:32]),
     .adc_gpio_1_o (adc_gpio_o[63:32]),
     .adc_gpio_1_t (adc_gpio_t[63:32]),
-    .adc_valid (adc_valid),
-    .adc_valid_pp (adc_valid_pp),
-    .adc_sync (adc_sync),
     .ddr_addr (ddr_addr),
     .ddr_ba (ddr_ba),
     .ddr_cas_n (ddr_cas_n),

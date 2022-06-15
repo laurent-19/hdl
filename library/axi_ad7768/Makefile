@@ -24,8 +24,8 @@ XILINX_DEPS += ../xilinx/common/ad_rst_constr.xdc
 XILINX_DEPS += ../xilinx/common/up_clock_mon_constr.xdc
 XILINX_DEPS += ../xilinx/common/up_xfer_cntrl_constr.xdc
 XILINX_DEPS += ../xilinx/common/up_xfer_status_constr.xdc
+XILINX_DEPS += axi_ad7768_if.v
 XILINX_DEPS += axi_ad7768_ip.tcl
-XILINX_DEPS += axi_adaq7768_if.v
 
 INTEL_DEPS += ../axi_generic_adc/axi_generic_adc.v
 INTEL_DEPS += ad7768_if.v
