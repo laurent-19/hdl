@@ -199,24 +199,18 @@ module system_top (
     .adc_data_5 (adc_data_5),
     .adc_data_6 (adc_data_6),
     .adc_data_7 (adc_data_7),
+    );
+
+  system_wrapper i_system_wrapper (
+    .clk_in (clk_in),
+    .ready_in (ready_in),
+    .data_in (data_in),
     .up_sshot (up_sshot),
     .up_format (up_format),
     .up_crc_enable (up_crc_enable),
     .up_crc_4_or_16_n (up_crc_4_or_16_n),
     .up_status_clr (adc_gpio_o[32:0]),
-    .up_status (adc_gpio_i[32:0]));
-
-  system_wrapper i_system_wrapper (
-    .adc_clk (adc_clk),
-    .adc_data (adc_data),
-    .adc_data_0 (adc_data_0),
-    .adc_data_1 (adc_data_1),
-    .adc_data_2 (adc_data_2),
-    .adc_data_3 (adc_data_3),
-    .adc_data_4 (adc_data_4),
-    .adc_data_5 (adc_data_5),
-    .adc_data_6 (adc_data_6),
-    .adc_data_7 (adc_data_7),
+    .up_status (adc_gpio_i[32:0])
     .adc_gpio_0_i (adc_gpio_i[31:0]),
     .adc_gpio_0_o (adc_gpio_o[31:0]),
     .adc_gpio_0_t (adc_gpio_t[31:0]),

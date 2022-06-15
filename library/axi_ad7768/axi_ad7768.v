@@ -59,14 +59,21 @@ module axi_ad7768 #(
   output  [ 1:0]  s_axi_rresp,
   output  [31:0]  s_axi_rdata,
   input           s_axi_rready,
-  output  [ 7:0]  adc_enable,
+  output          adc_enable_0,
+  output          adc_enable_1,
+  output          adc_enable_2,
+  output          adc_enable_3,
+  output          adc_enable_4,
+  output          adc_enable_5,
+  output          adc_enable_6,
+  output          adc_enable_7,
   input           adc_dovf,
   input           clk_in,
   input           ready_in,
   input   [ 7:0]  data_in,
-  output  [31:0]  adc_data_p,
   output [255:0]  adc_data,
   output          adc_clk,
+  output          adc_reset,
   output          adc_valid,
   output  [ 7:0]  adc_valid_pp,
   output          adc_sync,
@@ -97,6 +104,16 @@ module axi_ad7768 #(
   assign up_status_clr_s [35:33] = 'h0;
   assign up_status = up_status_s [32:0];
 
+  assign adc_enable_0 = adc_enable[0];
+  assign adc_enable_1 = adc_enable[1]; 
+  assign adc_enable_2 = adc_enable[2];
+  assign adc_enable_3 = adc_enable[3];
+  assign adc_enable_4 = adc_enable[4];
+  assign adc_enable_5 = adc_enable[5];
+  assign adc_enable_6 = adc_enable[6];
+  assign adc_enable_7 = adc_enable[7];
+  assign adc_reset = adc_rst_s;
+
 axi_generic_adc #(
   .NUM_OF_CHANNELS(8),
   .ID(ID))
@@ -124,6 +141,7 @@ i_axi_generic_adc (
   .s_axi_awprot(s_axi_awprot),
   .s_axi_arprot(s_axi_arprot),
   .adc_clk(adc_clk_s),
+  .adc_rst(adc_rst_s),
   .adc_enable(adc_enable),
   .adc_dovf(adc_dovf));
 
@@ -133,8 +151,6 @@ ad7768_if i_ad7768_if (
   .data_in (data_in),
   .adc_clk (adc_clk_s),
   .adc_valid (adc_valid),
-  .adc_valid_pp (adc_valid_pp_s),
-  .adc_sync (adc_sync),
   .adc_data (adc_data_p),
   .adc_data_0 (adc_data_0),
   .adc_data_1 (adc_data_1),
