@@ -46,7 +46,7 @@ module ad7768_if (
   // data path interface
 
   output                  adc_clk,
-  output  reg             adc_valid,
+  output                  adc_valid,
   output      [ 31:0]     adc_data,
   output  reg [ 31:0]     adc_data_0,
   output  reg [ 31:0]     adc_data_1,
@@ -289,7 +289,7 @@ module ad7768_if (
   assign adc_data = adc_data_8;
   assign adc_ready_in_s = ready_in;
   assign adc_clk = clk_in;
-
+  assign adc_valid =adc_valid_s;
   always @(posedge adc_clk) begin
     if (adc_valid == 1'b1) begin
       adc_status_8 <= adc_status_8 | adc_status[1:0];
@@ -405,7 +405,7 @@ module ad7768_if (
   // numbers of samples count 
 
   assign adc_crc_cnt_value = (adc_crc_4_or_16_n == 1'b1) ? 4'h3 : 4'hf;
-  assign adc_cnt_crc_enable_s = (adc_cnt_p < adc_cnt_value) ? 1'b1 : 1'b0;
+  assign adc_cnt_crc_enable_s = (adc_cnt_p < adc_crc_cnt_value) ? 1'b1 : 1'b0;
 
   always @(posedge adc_clk) begin
     if ((adc_ready == 1'b0) && (adc_ready_d == 1'b1)) begin
@@ -525,8 +525,8 @@ end
   assign adc_cnt_enable_s = (adc_cnt_p < adc_cnt_value) ? 1'b1 : 1'b0;
 
   always @(posedge adc_clk) begin
-    if (adc_ready == 1'b0) begin
-      adc_cnt_p <= 9'h000;
+    if (adc_ready == 1'b1) begin
+      adc_cnt_p <= 'h000;
     end else if (adc_cnt_enable_s == 1'b1) begin
       adc_cnt_p <= adc_cnt_p + 1'b1;
     end
@@ -672,7 +672,7 @@ end
 
   always @(posedge adc_clk) begin
     adc_ready_d1 <= adc_ready_in_s;
-    adc_ready <= adc_sshot ~^ adc_ready_d1;
+    adc_ready <=  adc_ready_d1;
     adc_ready_d <= adc_ready;
   end
 

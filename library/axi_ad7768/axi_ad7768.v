@@ -111,7 +111,7 @@ module axi_ad7768 #(
   assign adc_enable_5 = adc_enable[5];
   assign adc_enable_6 = adc_enable[6];
   assign adc_enable_7 = adc_enable[7];
-  assign adc_reset = adc_rst_s;
+  assign adc_reset = 1'b0;
 
 axi_generic_adc #(
   .NUM_OF_CHANNELS(8),
