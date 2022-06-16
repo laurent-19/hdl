@@ -5,11 +5,11 @@ create_bd_port -dir I clk_in
 create_bd_port -dir I ready_in
 create_bd_port -dir I -from 7 -to 0 data_in
 create_bd_port -dir I up_sshot
-create_bd_port -dir I -from 7 -to 0 up_format  
+create_bd_port -dir I -from 1 -to 0 up_format  
 create_bd_port -dir I up_crc_enable
 create_bd_port -dir I up_crc_4_or_16_n
 create_bd_port -dir I -from 32 -to 0 up_status_clr
-create_bd_port -dir I -from 32 -to 0 up_status
+create_bd_port -dir O -from 32 -to 0 up_status
 
 
 create_bd_port -dir I -from 31 -to 0 adc_gpio_0_i
@@ -58,8 +58,6 @@ ad_ip_parameter ad7768_gpio CONFIG.C_INTERRUPT_PRESENT 1
 ad_ip_instance util_cpack2 util_ad7768_adc_pack
 ad_ip_parameter util_ad7768_adc_pack CONFIG.NUM_OF_CHANNELS 8
 ad_ip_parameter util_ad7768_adc_pack CONFIG.SAMPLE_DATA_WIDTH 32
-
-ad_connect util_ad7768_adc_pack/reset sys_rstgen/peripheral_reset 
 
 # axi_ad7768
 

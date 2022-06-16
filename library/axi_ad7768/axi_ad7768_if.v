@@ -47,7 +47,7 @@ module ad7768_if (
 
   output                  adc_clk,
   output  reg             adc_valid,
-  output  reg [ 31:0]     adc_data,
+  output      [ 31:0]     adc_data,
   output  reg [ 31:0]     adc_data_0,
   output  reg [ 31:0]     adc_data_1,
   output  reg [ 31:0]     adc_data_2,
@@ -338,8 +338,7 @@ module ad7768_if (
     end
   end
 
-  always @(posedge adc_clk) begin
-    adc_data <= {{8{adc_data_int[23]}}, adc_data_int[23:0]};           
+  always @(posedge adc_clk) begin   
     if ((adc_crc_enable == 1'b1) && (adc_crc_scnt_8 == 4'd0)) begin
       adc_status[4] <= adc_crc_mismatch_8 & adc_crc_valid_p;
       adc_status[3] <= 1'b0;

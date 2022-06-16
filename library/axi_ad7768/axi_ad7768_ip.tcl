@@ -22,6 +22,7 @@ adi_ip_files axi_ad7768 [list \
   "$ad_hdl_dir/library/xilinx/common/ad_rst_constr.xdc" \
   "$ad_hdl_dir/library/xilinx/common/up_xfer_status_constr.xdc" \
   "$ad_hdl_dir/library/xilinx/common/up_clock_mon_constr.xdc" \
+  "$ad_hdl_dir/library/axi_generic_adc/axi_generic_adc.v" \
   "axi_ad7768_if.v" \
   "axi_ad7768.v" ]
 

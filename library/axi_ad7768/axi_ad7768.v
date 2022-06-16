@@ -67,16 +67,22 @@ module axi_ad7768 #(
   output          adc_enable_5,
   output          adc_enable_6,
   output          adc_enable_7,
+  output  [31:0]  adc_data_0,
+  output  [31:0]  adc_data_1,
+  output  [31:0]  adc_data_2,
+  output  [31:0]  adc_data_3,
+  output  [31:0]  adc_data_4,
+  output  [31:0]  adc_data_5,
+  output  [31:0]  adc_data_6,
+  output  [31:0]  adc_data_7,
   input           adc_dovf,
   input           clk_in,
   input           ready_in,
   input   [ 7:0]  data_in,
-  output [255:0]  adc_data,
+  output [ 31:0]  adc_data,
   output          adc_clk,
   output          adc_reset,
   output          adc_valid,
-  output  [ 7:0]  adc_valid_pp,
-  output          adc_sync,
   input           up_sshot,
   input   [ 1:0]  up_format,
   input           up_crc_enable,
@@ -88,17 +94,10 @@ module axi_ad7768 #(
   wire          valid_pp_s;
   wire  [35:0]  up_status_clr_s;
   wire  [35:0]  up_status_s;
-  wire  [31:0]  adc_data_0;
-  wire  [31:0]  adc_data_1;
-  wire  [31:0]  adc_data_2;
-  wire  [31:0]  adc_data_3;
-  wire  [31:0]  adc_data_4;
-  wire  [31:0]  adc_data_5;
-  wire  [31:0]  adc_data_6;
-  wire  [31:0]  adc_data_7;
-
-  assign adc_data = {adc_data_7, adc_data_6, adc_data_5, adc_data_4, adc_data_3, adc_data_2, adc_data_1, adc_data_0};
-  assign adc_valid_pp = {adc_valid_pp_s};
+  wire  [ 7:0]  adc_enable;
+  wire  [31:0]  adc_data_p;
+ 
+  assign adc_data = adc_data_p;
   assign adc_clk = adc_clk_s;
   assign up_status_clr_s [32:0] = up_status_clr;
   assign up_status_clr_s [35:33] = 'h0;

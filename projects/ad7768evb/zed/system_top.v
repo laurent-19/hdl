@@ -192,7 +192,7 @@ module system_top (
     .up_crc_enable (up_crc_enable),
     .up_crc_4_or_16_n (up_crc_4_or_16_n),
     .up_status_clr (adc_gpio_o[32:0]),
-    .up_status (adc_gpio_i[32:0])
+    .up_status (adc_gpio_i[32:0]),
     .adc_gpio_0_i (adc_gpio_i[31:0]),
     .adc_gpio_0_o (adc_gpio_o[31:0]),
     .adc_gpio_0_t (adc_gpio_t[31:0]),
