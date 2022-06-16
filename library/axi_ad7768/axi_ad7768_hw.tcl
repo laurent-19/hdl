@@ -20,7 +20,7 @@ ad_ip_files axi_ad7768 [list \
   "$ad_hdl_dir/library/common/up_xfer_cntrl.v" \
   "$ad_hdl_dir/library/common/up_xfer_status.v" \
   "$ad_hdl_dir/library/axi_generic_adc/axi_generic_adc.v" \
-  "ad7768_if.v" \
+  "axi_ad7768_if.v" \
   "axi_ad7768.v"]
 
 # IP parameters

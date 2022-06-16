@@ -37,7 +37,7 @@ set_property driver_value 0 [ipx::get_ports *adc* -of_objects [ipx::current_core
 
 ipx::infer_bus_interface adc_clk xilinx.com:signal:clock_rtl:1.0 [ipx::current_core]
 ipx::infer_bus_interface clk_in xilinx.com:signal:clock_rtl:1.0 [ipx::current_core]
-set reset_intf [ipx::infer_bus_interface adc_rst xilinx.com:signal:reset_rtl:1.0 [ipx::current_core]]
+set reset_intf [ipx::infer_bus_interface adc_reset xilinx.com:signal:reset_rtl:1.0 [ipx::current_core]]
 set reset_polarity [ipx::add_bus_parameter "POLARITY" $reset_intf]
 set_property value "ACTIVE_HIGH" $reset_polarity
 

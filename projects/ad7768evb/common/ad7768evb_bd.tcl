@@ -67,7 +67,7 @@ ad_ip_instance axi_ad7768 axi_ad7768_adc
 
 for {set i 0} {$i < 8} {incr i} {
   ad_connect axi_ad7768_adc/adc_enable_$i  util_ad7768_adc_pack/enable_$i
-  ad_connect axi_ad7768_adc/adc_data_$i    util_ad7768_adc_pack/enable_$i
+  ad_connect axi_ad7768_adc/adc_data_$i    util_ad7768_adc_pack/fifo_wr_data_$i
 }
 
 ad_connect axi_ad7768_adc/s_axi_aclk        sys_ps7/FCLK_CLK0 
@@ -82,7 +82,7 @@ ad_connect axi_ad7768_adc/up_status_clr     up_status_clr
 ad_connect axi_ad7768_adc/up_status         up_status
 ad_connect axi_ad7768_adc/adc_valid         util_ad7768_adc_pack/fifo_wr_en
 ad_connect axi_ad7768_adc/adc_clk           util_ad7768_adc_pack/clk
-
+ad_connect axi_ad7768_adc/adc_reset         util_ad7768_adc_pack/reset
 # connections  
 
 ad_connect  ad7768_dma/m_dest_axi_aresetn         sys_cpu_resetn                        
