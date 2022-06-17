@@ -99,8 +99,8 @@ module system_top (
   inout                   gpio_4_filter,
   inout                   reset_n,
   inout                   start_n,
-  inout                   sync_n,
-  inout                   sync_in_n,
+  output                  sync_mosi,
+  input                   sync_miso,
   output                  mclk);
 
   // internal signals
@@ -143,19 +143,18 @@ module system_top (
   assign up_crc_enable = gpio_o[33];
   assign up_crc_4_or_16_n = gpio_o[32];
 
+
   // instantiations
 
-  ad_iobuf #(.DATA_WIDTH(9)) i_iobuf (
-    .dio_t ({gpio_t[52:48], gpio_t[43:40]}),
-    .dio_i ({gpio_o[52:48], gpio_o[43:40]}),
-    .dio_o ({gpio_i[52:48], gpio_i[43:40]}),
+  ad_iobuf #(.DATA_WIDTH(7)) i_iobuf (
+    .dio_t ({gpio_t[52:48], gpio_t[41:40]}),
+    .dio_i ({gpio_o[52:48], gpio_o[41:40]}),
+    .dio_o ({gpio_i[52:48], gpio_i[41:40]}),
     .dio_p ({ gpio_4_filter,        // 52
               gpio_3_mode_3,        // 51
               gpio_2_mode_2,        // 50
               gpio_1_mode_1,        // 49
               gpio_0_mode_0,        // 48
-              sync_in_n,            // 43
-              sync_n,               // 42
               start_n,              // 41
               reset_n}));           // 40
 
@@ -193,6 +192,8 @@ module system_top (
     .up_crc_4_or_16_n (up_crc_4_or_16_n),
     .up_status_clr (adc_gpio_o[32:0]),
     .up_status (adc_gpio_i[32:0]),
+    .sync_mosi(),
+    .sync_miso(sync_miso),
     .adc_gpio_0_i (adc_gpio_i[31:0]),
     .adc_gpio_0_o (adc_gpio_o[31:0]),
     .adc_gpio_0_t (adc_gpio_t[31:0]),

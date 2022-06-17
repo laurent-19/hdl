@@ -42,20 +42,47 @@ module ad7768_if (
   input                   clk_in,
   input                   ready_in,
   input       [ 7:0]      data_in,
-
+  input                   sync_miso,
   // data path interface
 
   output                  adc_clk,
   output                  adc_valid,
   output      [ 31:0]     adc_data,
-  output  reg [ 31:0]     adc_data_0,
-  output  reg [ 31:0]     adc_data_1,
-  output  reg [ 31:0]     adc_data_2,
-  output  reg [ 31:0]     adc_data_3,
-  output  reg [ 31:0]     adc_data_4,
-  output  reg [ 31:0]     adc_data_5,
-  output  reg [ 31:0]     adc_data_6,
-  output  reg [ 31:0]     adc_data_7,
+  output      [ 31:0]     adc_data_0,
+  output      [ 31:0]     adc_data_1,
+  output      [ 31:0]     adc_data_2,
+  output      [ 31:0]     adc_data_3,
+  output      [ 31:0]     adc_data_4,
+  output      [ 31:0]     adc_data_5,
+  output      [ 31:0]     adc_data_6,
+  output      [ 31:0]     adc_data_7,
+  output       [ 1:0]     adc_format,
+  output       [ 7:0]     adc_crc_0_ila,
+  output       [ 7:0]     adc_crc_1_ila,
+  output       [ 7:0]     adc_crc_2_ila,
+  output       [ 7:0]     adc_crc_3_ila,
+  output       [ 7:0]     adc_crc_4_ila,
+  output       [ 7:0]     adc_crc_5_ila,
+  output       [ 7:0]     adc_crc_6_ila,
+  output       [ 7:0]     adc_crc_7_ila,
+  output       [ 7:0]     adc_crc_read_data_0_ila,
+  output       [ 7:0]     adc_crc_read_data_1_ila,
+  output       [ 7:0]     adc_crc_read_data_2_ila,
+  output       [ 7:0]     adc_crc_read_data_3_ila,
+  output       [ 7:0]     adc_crc_read_data_4_ila,
+  output       [ 7:0]     adc_crc_read_data_5_ila,
+  output       [ 7:0]     adc_crc_read_data_6_ila,
+  output       [ 7:0]     adc_crc_read_data_7_ila,
+  output       [ 95:0]    adc_crc_data_0_ila,
+  output       [ 95:0]    adc_crc_data_1_ila,
+  output       [ 95:0]    adc_crc_data_2_ila,
+  output       [ 95:0]    adc_crc_data_3_ila,
+  output       [ 95:0]    adc_crc_data_4_ila,
+  output       [ 95:0]    adc_crc_data_5_ila,
+  output       [ 95:0]    adc_crc_data_6_ila,
+  output       [ 95:0]    adc_crc_data_7_ila,
+  output                  adc_crc_valid_ila,
+
 
   // control interface
 
@@ -126,7 +153,7 @@ module ad7768_if (
   reg               adc_sshot_m1 = 'd0;
   reg               adc_sshot = 'd0;
   reg     [  1:0]   adc_format_m1 = 'd0;
-  reg     [  1:0]   adc_format = 'd0;
+  reg     [  1:0]   adc_format = 'h3;
   reg               adc_crc_enable_m1 = 'd0;
   reg               adc_crc_enable = 'd0;
   reg               adc_crc_4_or_16_n_m1 = 'd0;
@@ -134,7 +161,7 @@ module ad7768_if (
   reg     [ 35:0]   adc_status_clr_m1 = 'd0;
   reg     [ 35:0]   adc_status_clr = 'd0;
   reg     [ 35:0]   adc_status_clr_d = 'd0;
-
+  reg               crc_synced  = 'd0;
 
 // new added 
 
@@ -289,7 +316,47 @@ module ad7768_if (
   assign adc_data = adc_data_8;
   assign adc_ready_in_s = ready_in;
   assign adc_clk = clk_in;
-  assign adc_valid =adc_valid_s;
+
+  assign adc_valid = adc_valid_s;
+  assign adc_data_0 = adc_data_0_s;
+  assign adc_data_1 = adc_data_1_s;
+  assign adc_data_2 = adc_data_2_s;
+  assign adc_data_3 = adc_data_3_s;
+  assign adc_data_4 = adc_data_4_s;
+  assign adc_data_5 = adc_data_5_s;
+  assign adc_data_6 = adc_data_6_s;
+  assign adc_data_7 = adc_data_7_s;
+  assign adc_crc_0_ila  = adc_crc_s_0;
+  assign adc_crc_1_ila  = adc_crc_s_1;
+  assign adc_crc_2_ila  = adc_crc_s_2;
+  assign adc_crc_3_ila  = adc_crc_s_3;
+  assign adc_crc_4_ila  = adc_crc_s_4;
+  assign adc_crc_5_ila  = adc_crc_s_5;
+  assign adc_crc_6_ila  = adc_crc_s_6;
+  assign adc_crc_7_ila  = adc_crc_s_7;
+
+
+assign adc_crc_read_data_0_ila = adc_crc_read_data_0;
+assign adc_crc_read_data_1_ila = adc_crc_read_data_1;
+assign adc_crc_read_data_2_ila = adc_crc_read_data_2;
+assign adc_crc_read_data_3_ila = adc_crc_read_data_3;
+assign adc_crc_read_data_4_ila = adc_crc_read_data_4;
+assign adc_crc_read_data_5_ila = adc_crc_read_data_5;
+assign adc_crc_read_data_6_ila = adc_crc_read_data_6;
+assign adc_crc_read_data_7_ila = adc_crc_read_data_7;
+assign adc_crc_data_0_ila = adc_crc_data_0;
+assign adc_crc_data_1_ila = adc_crc_data_1;
+assign adc_crc_data_2_ila = adc_crc_data_2;
+assign adc_crc_data_3_ila = adc_crc_data_3;
+assign adc_crc_data_4_ila = adc_crc_data_4;
+assign adc_crc_data_5_ila = adc_crc_data_5;
+assign adc_crc_data_6_ila = adc_crc_data_6;
+assign adc_crc_data_7_ila = adc_crc_data_7; 
+assign adc_crc_valid_ila = adc_crc_valid_p;
+
+
+  
+  
   always @(posedge adc_clk) begin
     if (adc_valid == 1'b1) begin
       adc_status_8 <= adc_status_8 | adc_status[1:0];
@@ -405,12 +472,20 @@ module ad7768_if (
   // numbers of samples count 
 
   assign adc_crc_cnt_value = (adc_crc_4_or_16_n == 1'b1) ? 4'h3 : 4'hf;
-  assign adc_cnt_crc_enable_s = (adc_cnt_p < adc_crc_cnt_value) ? 1'b1 : 1'b0;
+  assign adc_cnt_crc_enable_s = (adc_crc_scnt_8 < adc_crc_cnt_value) ? 1'b1 : 1'b0;
+
+ // for CRC calculation only the first occurence of sync_miso is used for alignment
 
   always @(posedge adc_clk) begin
-    if ((adc_ready == 1'b0) && (adc_ready_d == 1'b1)) begin
+    if ( sync_miso == 1'b1 ) begin 
+      crc_synced = 1'b1;
+    end 
+  end
+
+  always @(posedge adc_clk) begin
+    if ((adc_ready_in_s == 1'b1) || (sync_miso == 1'b1) ) begin
       adc_crc_scnt_8 <= 4'd0;
-    end else if (adc_cnt_crc_enable_s == 1'b1) begin
+    end else if ((adc_cnt_crc_enable_s == 1'b1) && (crc_synced == 1'b1)) begin
       adc_crc_scnt_8 <= adc_crc_scnt_8 + 1'b1;
     end
     if (adc_crc_scnt_8 == adc_crc_cnt_value) begin
@@ -484,21 +559,6 @@ end
     end
   end
 
-  assign adc_seq_fmatch_s = (adc_seq_data == adc_seq_fdata) ? 1'b1 : 1'b0;
-  assign adc_seq_fupdate_s = adc_seq_fmatch_s ^ adc_seq_fmatch;
-
-  always @(posedge adc_clk) begin
-    if ((adc_ready == 1'b0) && (adc_ready_d == 1'b1)) begin
-      adc_seq_fmatch <= adc_seq_fmatch_s;
-      if (adc_seq_foos == 1'b1) begin
-        adc_seq_fdata <= adc_seq_data;
-      end
-      if (adc_seq_fupdate_s == 1'b0) begin
-        adc_seq_foos <= ~adc_seq_fmatch_s;
-      end
-    end
-  end
-
   always @(posedge adc_clk) begin
     adc_ch_valid_d <= {adc_ch_valid_d[6:0], adc_valid_p};
     adc_ch_data_d0[((32*0)+31):(32*0)] <= adc_data_0_s;
@@ -520,12 +580,13 @@ end
   end
 
   assign adc_cnt_value = (adc_format  == 'h0) ? 'hff :  
-                         ((adc_format == 'h1)? 'h7f : ((adc_format == 'h2)? 'h3f : 'h1f ) );
+                         ((adc_format == 'h1) ? 'h7f : 
+                         ((adc_format == 'h2) ? 'h3f : 'h1f ) );
 
   assign adc_cnt_enable_s = (adc_cnt_p < adc_cnt_value) ? 1'b1 : 1'b0;
 
-  always @(posedge adc_clk) begin
-    if (adc_ready == 1'b1) begin
+  always @(negedge adc_clk) begin
+    if (adc_ready_in_s == 1'b1) begin
       adc_cnt_p <= 'h000;
     end else if (adc_cnt_enable_s == 1'b1) begin
       adc_cnt_p <= adc_cnt_p + 1'b1;
@@ -583,7 +644,7 @@ end
         adc_data_5_s <= adc_data_p[((32*6)+31):(32*6)];
         adc_data_6_s <= adc_data_p[((32*5)+31):(32*5)];
         adc_data_7_s <= adc_data_p[((32*4)+31):(32*4)];
-      end else if( adc_format == 'h3) begin  // 4 active lines
+      end else if( adc_format == 'h2) begin  // 4 active lines
         adc_data_0_s <= adc_data_p[((32*1)+31):(32*1)];
         adc_data_1_s <= adc_data_p[((32*0)+31):(32*0)];
         adc_data_2_s <= adc_data_p[((32*3)+31):(32*3)];
@@ -668,14 +729,6 @@ end
     end
   end
 
-  // ready (single shot or continous)
-
-  always @(posedge adc_clk) begin
-    adc_ready_d1 <= adc_ready_in_s;
-    adc_ready <=  adc_ready_d1;
-    adc_ready_d <= adc_ready;
-  end
-
   // control signals
 
   assign adc_status_clr_s = adc_status_clr & ~adc_status_clr_d;
@@ -690,7 +743,7 @@ end
     adc_crc_enable_m1 <= up_crc_enable;
     adc_crc_enable <= adc_crc_enable_m1;
 
-    adc_crc_4_or_16_n_m1 <= up_crc_4_or_16_n;
+    adc_crc_4_or_16_n_m1 <= 1'd1;
     adc_crc_4_or_16_n <= adc_crc_4_or_16_n_m1;
 
     adc_status_clr_m1 <= up_status_clr;
