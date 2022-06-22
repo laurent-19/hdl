@@ -42,8 +42,10 @@ ad_interface signal adc_dovf            input  1 ovf
 ad_interface signal clk_in              input  1
 ad_interface signal ready_in            input  1
 ad_interface signal data_in             input  8
+ad_interface reset  adc_reset           output 1 
+set_interface_property if_adc_reset associatedClock if_adc_clk
 
-ad_interface signal adc_sync           output  1 sync
+ad_interface signal sync_miso           input  1 sync
 ad_interface signal up_sshot            input  1
 ad_interface signal up_format           input  2
 ad_interface signal up_crc_enable       input  1
@@ -55,26 +57,21 @@ ad_interface signal adc_valid          output  1  valid
 ad_interface signal adc_data_p         output  32 data
 
 
+
+
+
+
 set num_channels 8
 set samples_per_channel 1
 set sample_data_width 32
 set channel_data_width [expr $sample_data_width * $samples_per_channel]
 
 for {set n 0} {$n < $num_channels} {incr n} {
-  add_interface adc_ch_$n conduit end
-
-  add_interface_port adc_ch_$n adc_enable_$n enable Output 1
-  set_port_property adc_enable_$n fragment_list [format "adc_enable(%d:%d)" $n $n]
-
-  add_interface_port adc_ch_$n adc_valid_pp_$n valid Output 1
-  set_port_property adc_valid_pp_$n fragment_list [format "adc_valid_pp(%d)" $n]
-
-  add_interface_port adc_ch_$n adc_data_$n data Output $channel_data_width
-  set_port_property adc_data_$n fragment_list [format "adc_data(%d:%d)" \
-    [expr ($n+1) * $channel_data_width - 1] [expr $n * $channel_data_width]]
-
-  set_interface_property adc_ch_$n associatedClock if_adc_clk
-
-  set_interface_property adc_ch_$n associatedReset ""
+add_interface adc_ch_$n conduit end
+add_interface_port adc_ch_$n adc_enable_$n enable Output 1
+add_interface_port adc_ch_$n adc_data_$n data Output $sample_data_width
+add_interface_port adc_ch_$n adc_valid_$n valid Output 1
+set_interface_property adc_ch_$n associatedClock if_adc_clk 
+set_interface_property adc_ch_$n associatedReset none
 }
 

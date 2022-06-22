@@ -6,6 +6,7 @@ create_bd_port -dir I ready_in
 create_bd_port -dir I -from 7 -to 0 data_in
 create_bd_port -dir I up_sshot
 create_bd_port -dir I sync_miso
+create_bd_port -dir O sync_miso_s_pmod
 create_bd_port -dir I -from 1 -to 0 up_format  
 create_bd_port -dir I up_crc_enable
 create_bd_port -dir I up_crc_4_or_16_n
@@ -67,7 +68,7 @@ ad_ip_instance axi_ad7768 axi_ad7768_adc
 
 set my_ila [create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 my_ila]
     set_property -dict [list CONFIG.C_MONITOR_TYPE {Native}] $my_ila
-    set_property -dict [list CONFIG.C_NUM_OF_PROBES {40} ]   $my_ila
+    set_property -dict [list CONFIG.C_NUM_OF_PROBES {44} ]   $my_ila
     set_property -dict [list CONFIG.C_TRIGIN_EN {false}  ]   $my_ila
     set_property -dict [list CONFIG.C_PROBE0_WIDTH  {32} ]   $my_ila
     set_property -dict [list CONFIG.C_PROBE1_WIDTH  {32} ]   $my_ila
@@ -83,7 +84,7 @@ set my_ila [create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 my_ila]
     set_property -dict [list CONFIG.C_PROBE11_WIDTH {1}  ]   $my_ila
     set_property -dict [list CONFIG.C_PROBE12_WIDTH {8}  ]   $my_ila
     set_property -dict [list CONFIG.C_PROBE13_WIDTH {1}  ]   $my_ila
-    set_property -dict [list CONFIG.C_PROBE14_WIDTH {2}  ]   $my_ila
+    set_property -dict [list CONFIG.C_PROBE14_WIDTH {1}  ]   $my_ila
 
 for {set i 15} {$i < 30} {incr i} {
 set_property -dict [list CONFIG.C_PROBE${i}_WIDTH {8}  ]   $my_ila
@@ -92,6 +93,12 @@ for {set i 31} {$i < 38} {incr i} {
 set_property -dict [list CONFIG.C_PROBE${i}_WIDTH {96}  ]   $my_ila
 }
     set_property -dict [list CONFIG.C_PROBE39_WIDTH {1}  ]   $my_ila
+    set_property -dict [list CONFIG.C_PROBE40_WIDTH {1}  ]   $my_ila
+    set_property -dict [list CONFIG.C_PROBE41_WIDTH {1}  ]   $my_ila
+    set_property -dict [list CONFIG.C_PROBE42_WIDTH {4}  ]   $my_ila
+    set_property -dict [list CONFIG.C_PROBE43_WIDTH {1}  ]   $my_ila
+
+
 ad_connect my_ila/clk      axi_ad7768_adc/adc_clk
 for {set i 0} {$i < 8} {incr i} {
 ad_connect my_ila/probe$i   axi_ad7768_adc/adc_data_$i
@@ -102,13 +109,18 @@ ad_connect my_ila/probe10  axi_ad7768_adc/adc_reset
 ad_connect my_ila/probe11  axi_ad7768_adc/adc_enable_0
 ad_connect my_ila/probe12  axi_ad7768_adc/data_in
 ad_connect my_ila/probe13  axi_ad7768_adc/ready_in
-ad_connect my_ila/probe14  axi_ad7768_adc/adc_format
+ad_connect my_ila/probe14  axi_ad7768_adc/adc_crc_enable_ila
 for {set i 0} {$i < 8} {incr i} {
 ad_connect my_ila/probe[expr $i+15]  axi_ad7768_adc/adc_crc_${i}_ila
 ad_connect my_ila/probe[expr $i+23]  axi_ad7768_adc/adc_crc_read_data_${i}_ila
 ad_connect my_ila/probe[expr $i+31]  axi_ad7768_adc/adc_crc_data_${i}_ila
 }
 ad_connect my_ila/probe39  axi_ad7768_adc/adc_crc_valid_ila
+ad_connect my_ila/probe40  axi_ad7768_adc/sync_miso
+ad_connect my_ila/probe41  axi_ad7768_adc/adc_crc_synced_ila
+ad_connect my_ila/probe42  axi_ad7768_adc/adc_crc_scnt_8_ila
+ad_connect my_ila/probe43  axi_ad7768_adc/adc_cnt_crc_enable_s_ila
+
 
 for {set i 0} {$i < 8} {incr i} {
   ad_connect axi_ad7768_adc/adc_enable_$i  util_ad7768_adc_pack/enable_$i
@@ -126,6 +138,7 @@ ad_connect axi_ad7768_adc/up_crc_4_or_16_n  up_crc_4_or_16_n
 ad_connect axi_ad7768_adc/up_status_clr     up_status_clr
 ad_connect axi_ad7768_adc/up_status         up_status
 ad_connect axi_ad7768_adc/sync_miso         sync_miso
+ad_connect axi_ad7768_adc/sync_miso_s_pmod  sync_miso_s_pmod
 ad_connect axi_ad7768_adc/adc_valid         util_ad7768_adc_pack/fifo_wr_en
 ad_connect axi_ad7768_adc/adc_clk           util_ad7768_adc_pack/clk
 ad_connect axi_ad7768_adc/adc_reset         util_ad7768_adc_pack/reset

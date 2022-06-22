@@ -25,5 +25,9 @@ set_property  -dict {PACKAGE_PIN M21  IOSTANDARD LVCMOS25}  [get_ports sync_mosi
 set_property  -dict {PACKAGE_PIN K18  IOSTANDARD LVCMOS25}  [get_ports sync_miso]           ; ## D12  FMC_LPC_LA05_N     IO_L7N_T1_34              
 set_property  -dict {PACKAGE_PIN N20  IOSTANDARD LVCMOS25}  [get_ports mclk]                ; ## D09  FMC_LPC_LA01_CC_N  IO_L14N_T2_SRCC_34        
 
+set_property  -dict {PACKAGE_PIN Y11   IOSTANDARD LVCMOS33}  [get_ports sync_miso_pmod]     ; #CS_N          P24_P1    JA1_1  
+set_property  -dict {PACKAGE_PIN AA11  IOSTANDARD LVCMOS33}  [get_ports start_n_pmod]       ; #SDI           P24_P2    JA1_2   
+set_property  -dict {PACKAGE_PIN Y10   IOSTANDARD LVCMOS33}  [get_ports sync_miso_s_pmod]   ; #CS_N          P24_P1    JA1_3 
+
 create_clock -name adc_clk -period 20 [get_ports clk_in]
 

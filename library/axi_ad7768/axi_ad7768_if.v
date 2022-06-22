@@ -56,7 +56,6 @@ module ad7768_if (
   output      [ 31:0]     adc_data_5,
   output      [ 31:0]     adc_data_6,
   output      [ 31:0]     adc_data_7,
-  output       [ 1:0]     adc_format,
   output       [ 7:0]     adc_crc_0_ila,
   output       [ 7:0]     adc_crc_1_ila,
   output       [ 7:0]     adc_crc_2_ila,
@@ -82,8 +81,11 @@ module ad7768_if (
   output       [ 95:0]    adc_crc_data_6_ila,
   output       [ 95:0]    adc_crc_data_7_ila,
   output                  adc_crc_valid_ila,
-
-
+  output                  adc_crc_synced_ila,
+  output        [  3:0]   adc_crc_scnt_8_ila,
+  output                  adc_cnt_crc_enable_s_ila,
+  output                  adc_crc_enable_ila,
+  output                  sync_miso_s_pmod,
   // control interface
 
   input                   up_sshot,
@@ -153,7 +155,7 @@ module ad7768_if (
   reg               adc_sshot_m1 = 'd0;
   reg               adc_sshot = 'd0;
   reg     [  1:0]   adc_format_m1 = 'd0;
-  reg     [  1:0]   adc_format = 'h3;
+  reg     [  1:0]   adc_format = 'h0;
   reg               adc_crc_enable_m1 = 'd0;
   reg               adc_crc_enable = 'd0;
   reg               adc_crc_4_or_16_n_m1 = 'd0;
@@ -161,7 +163,7 @@ module ad7768_if (
   reg     [ 35:0]   adc_status_clr_m1 = 'd0;
   reg     [ 35:0]   adc_status_clr = 'd0;
   reg     [ 35:0]   adc_status_clr_d = 'd0;
-  reg               crc_synced  = 'd0;
+
 
 // new added 
 
@@ -173,6 +175,14 @@ module ad7768_if (
   reg     [ 95:0]   adc_crc_data_5 = 'd0;
   reg     [ 95:0]   adc_crc_data_6 = 'd0;
   reg     [ 95:0]   adc_crc_data_7 = 'd0;
+  reg     [ 95:0]   adc_crc_data_0_s = 'd0;
+  reg     [ 95:0]   adc_crc_data_1_s = 'd0;
+  reg     [ 95:0]   adc_crc_data_2_s = 'd0;
+  reg     [ 95:0]   adc_crc_data_3_s = 'd0;
+  reg     [ 95:0]   adc_crc_data_4_s = 'd0;
+  reg     [ 95:0]   adc_crc_data_5_s = 'd0;
+  reg     [ 95:0]   adc_crc_data_6_s = 'd0;
+  reg     [ 95:0]   adc_crc_data_7_s = 'd0;
   reg     [  7:0]   adc_crc_read_data_0 = 'd0;
   reg     [  7:0]   adc_crc_read_data_1 = 'd0;
   reg     [  7:0]   adc_crc_read_data_2 = 'd0;
@@ -209,7 +219,10 @@ module ad7768_if (
   reg               adc_valid_s    = 'b0; 
   reg               adc_valid_s_d   = 'b0;
   reg               adc_crc_valid_p = 'b0;
+  reg               adc_crc_valid_p_d = 'b0;
   reg     [  2:0]   adc_seq = 'd0;
+  reg               crc_synced = 'd0;
+  reg               sync_miso_d ='d0;
   // internal signals
 
   wire    [  7:0]   adc_crc_in_s;
@@ -249,7 +262,7 @@ module ad7768_if (
   wire    [ 7:0]    adc_crc_s_5;
   wire    [ 7:0]    adc_crc_s_6;
   wire    [ 7:0]    adc_crc_s_7;
-
+  wire              sync_miso_s;
   // function (crc)
 
   function  [ 7:0]  crc8;
@@ -317,15 +330,15 @@ module ad7768_if (
   assign adc_ready_in_s = ready_in;
   assign adc_clk = clk_in;
 
-  assign adc_valid = adc_valid_s;
-  assign adc_data_0 = adc_data_0_s;
-  assign adc_data_1 = adc_data_1_s;
-  assign adc_data_2 = adc_data_2_s;
-  assign adc_data_3 = adc_data_3_s;
-  assign adc_data_4 = adc_data_4_s;
-  assign adc_data_5 = adc_data_5_s;
-  assign adc_data_6 = adc_data_6_s;
-  assign adc_data_7 = adc_data_7_s;
+  assign adc_valid = adc_valid_s_d;
+  assign adc_data_0 = adc_data_0_s_d;
+  assign adc_data_1 = adc_data_1_s_d;
+  assign adc_data_2 = adc_data_2_s_d;
+  assign adc_data_3 = adc_data_3_s_d;
+  assign adc_data_4 = adc_data_4_s_d;
+  assign adc_data_5 = adc_data_5_s_d;
+  assign adc_data_6 = adc_data_6_s_d;
+  assign adc_data_7 = adc_data_7_s_d;
   assign adc_crc_0_ila  = adc_crc_s_0;
   assign adc_crc_1_ila  = adc_crc_s_1;
   assign adc_crc_2_ila  = adc_crc_s_2;
@@ -352,11 +365,13 @@ assign adc_crc_data_4_ila = adc_crc_data_4;
 assign adc_crc_data_5_ila = adc_crc_data_5;
 assign adc_crc_data_6_ila = adc_crc_data_6;
 assign adc_crc_data_7_ila = adc_crc_data_7; 
-assign adc_crc_valid_ila = adc_crc_valid_p;
+assign adc_crc_valid_ila = adc_crc_valid_p_d;
+assign adc_crc_enable_ila = adc_crc_enable;
+assign adc_crc_synced_ila        = crc_synced;
+assign adc_crc_scnt_8_ila        =adc_crc_scnt_8;
+assign adc_cnt_crc_enable_s_ila = adc_cnt_crc_enable_s;
+assign sync_miso_s_pmod = sync_miso_s;
 
-
-  
-  
   always @(posedge adc_clk) begin
     if (adc_valid == 1'b1) begin
       adc_status_8 <= adc_status_8 | adc_status[1:0];
@@ -471,21 +486,16 @@ assign adc_crc_valid_ila = adc_crc_valid_p;
 
   // numbers of samples count 
 
-  assign adc_crc_cnt_value = (adc_crc_4_or_16_n == 1'b1) ? 4'h3 : 4'hf;
+  assign adc_crc_cnt_value = 4'h4;   //(adc_crc_4_or_16_n == 1'b1) ? 4'h3 : 4'hf;
   assign adc_cnt_crc_enable_s = (adc_crc_scnt_8 < adc_crc_cnt_value) ? 1'b1 : 1'b0;
 
  // for CRC calculation only the first occurence of sync_miso is used for alignment
 
   always @(posedge adc_clk) begin
-    if ( sync_miso == 1'b1 ) begin 
-      crc_synced = 1'b1;
-    end 
-  end
 
-  always @(posedge adc_clk) begin
-    if ((adc_ready_in_s == 1'b1) || (sync_miso == 1'b1) ) begin
+    if ((sync_miso_s == 1'b1) || (adc_cnt_crc_enable_s == 1'b0) || (adc_crc_enable == 1'b0) ) begin
       adc_crc_scnt_8 <= 4'd0;
-    end else if ((adc_cnt_crc_enable_s == 1'b1) && (crc_synced == 1'b1)) begin
+    end else if (adc_valid_p == 1'b1) begin
       adc_crc_scnt_8 <= adc_crc_scnt_8 + 1'b1;
     end
     if (adc_crc_scnt_8 == adc_crc_cnt_value) begin
@@ -493,10 +503,50 @@ assign adc_crc_valid_ila = adc_crc_valid_p;
     end else begin
       adc_crc_valid_p <= 1'b0;
     end
+    adc_crc_valid_p_d <= adc_crc_valid_p;
   end
   
 always @(posedge adc_clk) begin
-  if(adc_crc_scnt_8 == 4'd0) begin 
+  if((adc_cnt_crc_enable_s == 1'b1) && (adc_valid_p == 1'b1) ) begin 
+    adc_crc_data_0_s <= {adc_crc_data_0_s[71:0],adc_data_0_s[23:0]};
+    adc_crc_data_1_s <= {adc_crc_data_1_s[71:0],adc_data_1_s[23:0]};
+    adc_crc_data_2_s <= {adc_crc_data_2_s[71:0],adc_data_2_s[23:0]};
+    adc_crc_data_3_s <= {adc_crc_data_3_s[71:0],adc_data_3_s[23:0]};
+    adc_crc_data_4_s <= {adc_crc_data_4_s[71:0],adc_data_4_s[23:0]};
+    adc_crc_data_5_s <= {adc_crc_data_5_s[71:0],adc_data_5_s[23:0]};
+    adc_crc_data_6_s <= {adc_crc_data_6_s[71:0],adc_data_6_s[23:0]};
+    adc_crc_data_7_s <= {adc_crc_data_7_s[71:0],adc_data_7_s[23:0]};
+  end else if(adc_cnt_crc_enable_s == 1'b0) begin 
+    adc_crc_data_0_s <= 'b0;
+    adc_crc_data_1_s <= 'b0;
+    adc_crc_data_2_s <= 'b0;
+    adc_crc_data_3_s <= 'b0;
+    adc_crc_data_4_s <= 'b0;
+    adc_crc_data_5_s <= 'b0;
+    adc_crc_data_6_s <= 'b0;
+    adc_crc_data_7_s <= 'b0;
+  end
+end
+
+always @(posedge adc_clk) begin
+  if(adc_crc_valid_p == 1'b1 ) begin
+    adc_crc_data_0 <= adc_crc_data_0_s; 
+    adc_crc_data_1 <= adc_crc_data_1_s;
+    adc_crc_data_2 <= adc_crc_data_2_s;
+    adc_crc_data_3 <= adc_crc_data_3_s;
+    adc_crc_data_4 <= adc_crc_data_4_s;
+    adc_crc_data_5 <= adc_crc_data_5_s;
+    adc_crc_data_6 <= adc_crc_data_6_s;
+    adc_crc_data_7 <= adc_crc_data_7_s;
+    adc_crc_reg_0  <= adc_crc_s_0;
+    adc_crc_reg_1  <= adc_crc_s_1;
+    adc_crc_reg_2  <= adc_crc_s_2;
+    adc_crc_reg_3  <= adc_crc_s_3;
+    adc_crc_reg_4  <= adc_crc_s_4;
+    adc_crc_reg_5  <= adc_crc_s_5;
+    adc_crc_reg_6  <= adc_crc_s_6;
+    adc_crc_reg_7  <= adc_crc_s_7;
+  end else begin 
     adc_crc_data_0 <= 96'b0;
     adc_crc_data_1 <= 96'b0;
     adc_crc_data_2 <= 96'b0;
@@ -513,32 +563,12 @@ always @(posedge adc_clk) begin
     adc_crc_reg_5  <= 'b0;
     adc_crc_reg_6  <= 'b0;
     adc_crc_reg_7  <= 'b0;
-    
-  end else if (adc_cnt_crc_enable_s == 1'b1) begin 
 
-    adc_crc_data_0 <= {adc_crc_data_0[71:0],adc_data_0_s[23:0]};
-    adc_crc_data_1 <= {adc_crc_data_1[71:0],adc_data_1_s[23:0]};
-    adc_crc_data_2 <= {adc_crc_data_2[71:0],adc_data_2_s[23:0]};
-    adc_crc_data_3 <= {adc_crc_data_3[71:0],adc_data_3_s[23:0]};
-    adc_crc_data_4 <= {adc_crc_data_4[71:0],adc_data_4_s[23:0]};
-    adc_crc_data_5 <= {adc_crc_data_5[71:0],adc_data_5_s[23:0]};
-    adc_crc_data_6 <= {adc_crc_data_6[71:0],adc_data_6_s[23:0]};
-    adc_crc_data_7 <= {adc_crc_data_7[71:0],adc_data_7_s[23:0]};
-    adc_crc_reg_0  <= adc_crc_s_0;
-    adc_crc_reg_1  <= adc_crc_s_1;
-    adc_crc_reg_2  <= adc_crc_s_2;
-    adc_crc_reg_3  <= adc_crc_s_3;
-    adc_crc_reg_4  <= adc_crc_s_4;
-    adc_crc_reg_5  <= adc_crc_s_5;
-    adc_crc_reg_6  <= adc_crc_s_6;
-    adc_crc_reg_7  <= adc_crc_s_7;
-
-  end
-
+  end 
 end
 
   always @(posedge adc_clk) begin
-    if (adc_crc_valid_p == 1'b0) begin
+    if (adc_crc_valid_p == 1'b1) begin
       adc_crc_read_data_0 <=adc_data_0_s[31:24];
       adc_crc_read_data_1 <=adc_data_1_s[31:24];
       adc_crc_read_data_2 <=adc_data_2_s[31:24];
@@ -750,6 +780,15 @@ end
     adc_status_clr <= adc_status_clr_m1;
     adc_status_clr_d <= adc_status_clr;
   end
+
+  // rising edge detection sync_miso
+
+  assign sync_miso_s = sync_miso &~ sync_miso_d;
+
+  always @(posedge adc_clk) begin
+  sync_miso_d <= sync_miso;
+  end
+
 
 endmodule
 
