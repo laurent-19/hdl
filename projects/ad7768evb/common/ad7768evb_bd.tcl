@@ -1,19 +1,19 @@
 
 # ad7768 interface
 
-create_bd_port -dir I adc_clk
-create_bd_port -dir I adc_valid
-create_bd_port -dir I adc_valid_pp
-create_bd_port -dir I adc_sync
-create_bd_port -dir I -from 31 -to 0 adc_data
-create_bd_port -dir I -from 31 -to 0 adc_data_0
-create_bd_port -dir I -from 31 -to 0 adc_data_1
-create_bd_port -dir I -from 31 -to 0 adc_data_2
-create_bd_port -dir I -from 31 -to 0 adc_data_3
-create_bd_port -dir I -from 31 -to 0 adc_data_4
-create_bd_port -dir I -from 31 -to 0 adc_data_5
-create_bd_port -dir I -from 31 -to 0 adc_data_6
-create_bd_port -dir I -from 31 -to 0 adc_data_7
+create_bd_port -dir I clk_in
+create_bd_port -dir I ready_in
+create_bd_port -dir I -from 7 -to 0 data_in
+create_bd_port -dir I up_sshot
+create_bd_port -dir I sync_miso
+create_bd_port -dir O sync_miso_s_pmod
+create_bd_port -dir I -from 1 -to 0 up_format  
+create_bd_port -dir I up_crc_enable
+create_bd_port -dir I up_crc_4_or_16_n
+create_bd_port -dir I -from 32 -to 0 up_status_clr
+create_bd_port -dir O -from 32 -to 0 up_status
+create_bd_port -dir O sync_mosi
+
 create_bd_port -dir I -from 31 -to 0 adc_gpio_0_i
 create_bd_port -dir O -from 31 -to 0 adc_gpio_0_o
 create_bd_port -dir O -from 31 -to 0 adc_gpio_0_t
@@ -61,39 +61,43 @@ ad_ip_instance util_cpack2 util_ad7768_adc_pack
 ad_ip_parameter util_ad7768_adc_pack CONFIG.NUM_OF_CHANNELS 8
 ad_ip_parameter util_ad7768_adc_pack CONFIG.SAMPLE_DATA_WIDTH 32
 
-ad_connect adc_clk util_ad7768_adc_pack/clk
-ad_connect sys_rstgen/peripheral_reset util_ad7768_adc_pack/reset
-ad_connect adc_valid_pp util_ad7768_adc_pack/fifo_wr_en
+# axi_ad7768
+
+ad_ip_instance axi_ad7768 axi_ad7768_adc
+ad_ip_parameter axi_ad7768_adc CONFIG.NUM_CHANNELS 8
 
 for {set i 0} {$i < 8} {incr i} {
-  ad_connect adc_data_$i util_ad7768_adc_pack/fifo_wr_data_$i
+  ad_connect axi_ad7768_adc/adc_enable_$i  util_ad7768_adc_pack/enable_$i
+  ad_connect axi_ad7768_adc/adc_data_$i    util_ad7768_adc_pack/fifo_wr_data_$i
 }
 
-# axi_generic_adc
+ad_connect axi_ad7768_adc/s_axi_aclk        sys_ps7/FCLK_CLK0 
+ad_connect axi_ad7768_adc/clk_in            clk_in
+ad_connect axi_ad7768_adc/ready_in          ready_in
+ad_connect axi_ad7768_adc/data_in           data_in
+ad_connect axi_ad7768_adc/up_sshot          up_sshot
+ad_connect axi_ad7768_adc/up_format         up_format
+ad_connect axi_ad7768_adc/up_crc_enable     up_crc_enable
+ad_connect axi_ad7768_adc/up_crc_4_or_16_n  up_crc_4_or_16_n
+ad_connect axi_ad7768_adc/up_status_clr     up_status_clr
+ad_connect axi_ad7768_adc/up_status         up_status
+ad_connect axi_ad7768_adc/sync_miso         sync_miso
+ad_connect axi_ad7768_adc/sync_miso_s_pmod  sync_miso_s_pmod
+ad_connect axi_ad7768_adc/adc_valid         util_ad7768_adc_pack/fifo_wr_en
+ad_connect axi_ad7768_adc/adc_clk           util_ad7768_adc_pack/clk
+ad_connect axi_ad7768_adc/adc_reset         util_ad7768_adc_pack/reset
 
-ad_ip_instance axi_generic_adc axi_ad7768_adc
-ad_ip_parameter axi_ad7768_adc CONFIG.NUM_OF_CHANNELS 8
+# connections  
 
-for {set i 0} {$i < 8} {incr i} {
-  ad_ip_instance xlslice xlslice_$i
-  set_property -dict [list CONFIG.DIN_FROM $i CONFIG.DIN_WIDTH {8} CONFIG.DOUT_WIDTH {1} CONFIG.DIN_TO $i] [get_bd_cells xlslice_$i]
-  ad_connect axi_ad7768_adc/adc_enable xlslice_$i/Din
-  ad_connect xlslice_$i/Dout util_ad7768_adc_pack/enable_$i
-}
+ad_connect  ad7768_dma/m_dest_axi_aresetn         sys_cpu_resetn                        
+ad_connect  ad7768_dma/fifo_wr_clk                axi_ad7768_adc/adc_clk                
+ad_connect  ad7768_dma/fifo_wr_en                 axi_ad7768_adc/adc_valid              
+ad_connect  ad7768_dma/fifo_wr_din                axi_ad7768_adc/adc_data               
+ad_connect  ad7768_dma_2/m_dest_axi_aresetn       sys_cpu_resetn                        
+ad_connect  ad7768_dma_2/fifo_wr_clk              axi_ad7768_adc/adc_clk                
+ad_connect  ad7768_dma_2/fifo_wr                  util_ad7768_adc_pack/packed_fifo_wr   
+ad_connect  axi_ad7768_adc/adc_dovf               util_ad7768_adc_pack/fifo_wr_overflow 
 
-# interconnects
-
-ad_connect  sys_cpu_resetn ad7768_dma/m_dest_axi_aresetn
-ad_connect  sys_cpu_resetn ad7768_dma_2/m_dest_axi_aresetn
-ad_connect  adc_clk ad7768_dma/fifo_wr_clk
-ad_connect  adc_valid ad7768_dma/fifo_wr_en
-ad_connect  adc_sync ad7768_dma/fifo_wr_sync
-ad_connect  adc_data ad7768_dma/fifo_wr_din
-ad_connect  adc_clk ad7768_dma_2/fifo_wr_clk
-ad_connect  util_ad7768_adc_pack/packed_fifo_wr ad7768_dma_2/fifo_wr
-ad_connect  util_ad7768_adc_pack/fifo_wr_overflow axi_ad7768_adc/adc_dovf
-ad_connect  adc_clk axi_ad7768_adc/adc_clk
-ad_connect  sys_ps7/FCLK_CLK0 axi_ad7768_adc/s_axi_aclk
 ad_connect  adc_gpio_0_i ad7768_gpio/gpio_io_i
 ad_connect  adc_gpio_0_o ad7768_gpio/gpio_io_o
 ad_connect  adc_gpio_0_t ad7768_gpio/gpio_io_t
