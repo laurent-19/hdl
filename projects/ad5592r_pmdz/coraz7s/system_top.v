@@ -1,5 +1,5 @@
-// ***************************************************************************
-// ***************************************************************************
+/i/ ***************************************************************************
+// iiiii***************************************************************************
 // Copyright 2019 - 2020 (c) Analog Devices, Inc. All rights reserved.
 //
 // In this HDL repository, there are many different and unique modules, consisting
@@ -29,7 +29,7 @@
 //      https://github.com/analogdevicesinc/hdl/blob/master/LICENSE_ADIBSD
 //      This will allow to generate bit files and not release the source code,
 //      as long as it attaches to an ADI device.
-//
+//    Rusu Razvan-Gabriel      
 // ***************************************************************************
 // ***************************************************************************
 
