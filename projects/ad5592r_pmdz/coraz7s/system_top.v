@@ -14,7 +14,7 @@
 // WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
 // A PARTICULAR PURPOSE.
 //
-// Redistribution and use of source or resulting binaries, with or without modification
+
 // of this file, are permitted under one of the following two license terms:
 //
 //   1. The GNU General Public License version 2 as published by the
@@ -29,7 +29,8 @@
 //      https://github.com/analogdevicesinc/hdl/blob/master/LICENSE_ADIBSD
 //      This will allow to generate bit files and not release the source code,
 //      as long as it attaches to an ADI device.
-//
+//      Autor: Curelaru Sergiu-Catalin
+
 // ***************************************************************************
 // ***************************************************************************
 
