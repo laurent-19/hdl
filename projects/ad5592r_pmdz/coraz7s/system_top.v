@@ -64,7 +64,16 @@ module system_top (
   inout   [5:0]   led,
 
   // ad5592r SPI configuration interface
-);
+  output          SPI_CS,
+  output         SPI_MOSI,
+  input          SPI_MISO,
+  output         SPI_SCLK,
+
+  output         M2K_CS,
+  output         M2K_MOSI,
+  input          M2K_MISO,
+  output         M2K_SCLK,
+
 
   // internal signals
 
