@@ -62,10 +62,19 @@ module system_top (
   inout           fixed_io_ps_porb,
   inout           fixed_io_ps_srstb,
 
-  inout   [1:0]   btn,
-  inout   [5:0]   led,
+  inout   [ 1:0]  btn,
+  inout   [ 5:0]  led,
 
   // ad5592r SPI configuration interface
+
+  input           spi_miso,
+  output          spi_mosi,
+  output          spi_sclk,
+  output          spi_cs,
+  output          spi_miso_m2k,
+  output          spi_mosi_m2k,
+  output          spi_sclk_m2k,
+  output          spi_cs_m2k
 );
 
   // internal signals
@@ -77,7 +86,7 @@ module system_top (
   // instantiations
 
   ad_iobuf #(
-    .DATA_WIDTH(2)
+    .DATA_WIDTH (2)
   ) i_iobuf_buttons (
     .dio_t(gpio_t[1:0]),
     .dio_i(gpio_o[1:0]),
@@ -85,14 +94,20 @@ module system_top (
     .dio_p(btn));
 
   ad_iobuf #(
-    .DATA_WIDTH(6)
+    .DATA_WIDTH (6)
   ) i_iobuf_leds (
     .dio_t(gpio_t[7:2]),
     .dio_i(gpio_o[7:2]),
     .dio_o(gpio_i[7:2]),
     .dio_p(led));
 
+  assign gpio_i[32: 8] = gpio_o[32: 8];
   assign gpio_i[63:33] = gpio_o[63:33];
+  assign spi_miso_m2k = spi_miso;
+  assign spi_mosi_m2k = spi_mosi;
+  assign spi_sclk_m2k = spi_sclk;
+  assign spi_cs_m2k = spi_cs;
+
   system_wrapper i_system_wrapper (
     .ddr_addr (ddr_addr),
     .ddr_ba (ddr_ba),
@@ -109,23 +124,27 @@ module system_top (
     .ddr_ras_n (ddr_ras_n),
     .ddr_reset_n (ddr_reset_n),
     .ddr_we_n (ddr_we_n),
+
     .fixed_io_ddr_vrn (fixed_io_ddr_vrn),
     .fixed_io_ddr_vrp (fixed_io_ddr_vrp),
     .fixed_io_mio (fixed_io_mio),
     .fixed_io_ps_clk (fixed_io_ps_clk),
     .fixed_io_ps_porb (fixed_io_ps_porb),
     .fixed_io_ps_srstb (fixed_io_ps_srstb),
+
     .gpio_i (gpio_i),
     .gpio_o (gpio_o),
-    .spi0_clk_i (),
-    .spi0_clk_o (),
-    .spi0_csn_0_o (),
+
+    .spi0_clk_i (spi_sclk),
+    .spi0_clk_o (spi_sclk),
+    .spi0_csn_0_o (spi_cs),
     .spi0_csn_1_o (),
     .spi0_csn_2_o (),
     .spi0_csn_i (1'b1),
-    .spi0_sdi_i (),
-    .spi0_sdo_i (),
-    .spi0_sdo_o (),
+    .spi0_sdi_i (spi_miso),
+    .spi0_sdo_i (spi_mosi),
+    .spi0_sdo_o (spi_mosi),
+
     .spi1_clk_i (1'b0),
     .spi1_clk_o (),
     .spi1_csn_0_o (),
