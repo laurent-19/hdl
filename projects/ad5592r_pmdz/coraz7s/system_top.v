@@ -65,6 +65,15 @@ module system_top (
   inout   [5:0]   led,
 
   // ad5592r SPI configuration interface
+  output          ja_spi_ss,
+  output          ja_spi_mosi,
+  output          ja_spi_miso,
+  output          ja_spi_sck,
+
+  output          jb_spi_ss,
+  output          jb_spi_mosi,
+  output          jb_spi_miso,
+  output          jb_spi_sck,
 );
 
   // internal signals
