@@ -65,6 +65,15 @@ module system_top (
   inout   [5:0]   led,
 
   // ad5592r SPI configuration interface
+  output          spi_mosi,
+  input           spi_miso,
+  output          spi_sclk,
+  output          spi_cs,
+  
+  output          m2k_mosi,
+  input           m2k_miso,
+  output          m2k_sclk,
+  output          m2k_cs
 );
 
   // internal signals
@@ -116,15 +125,15 @@ module system_top (
     .fixed_io_ps_srstb (fixed_io_ps_srstb),
     .gpio_i (gpio_i),
     .gpio_o (gpio_o),
-    .spi0_clk_i (),
-    .spi0_clk_o (),
+    .spi0_clk_i (spi_sclk),
+    .spi0_clk_o (spi_sclk),
     .spi0_csn_0_o (),
     .spi0_csn_1_o (),
     .spi0_csn_2_o (),
     .spi0_csn_i (1'b1),
-    .spi0_sdi_i (),
-    .spi0_sdo_i (),
-    .spi0_sdo_o (),
+    .spi0_sdi_i (spi_miso),
+    .spi0_sdo_i (spi_mosi),
+    .spi0_sdo_o (spi_mosi),
     .spi1_clk_i (1'b0),
     .spi1_clk_o (),
     .spi1_csn_0_o (),
