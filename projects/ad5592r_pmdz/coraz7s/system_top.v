@@ -64,6 +64,16 @@ module system_top (
   inout   [5:0]   led,
 
   // ad5592r SPI configuration interface
+  
+  output SPI_CS,
+  input SPI_MOSI,
+  output SPI_MISO,
+  output SPI_SCLK,
+  
+  output M2K_CS,
+  output M2K_MOSI,
+  output M2K_MISO,
+  output M2K_SCLK
 );
 
   // internal signals
@@ -91,6 +101,12 @@ module system_top (
     .dio_p(led));
 
   assign gpio_i[63:33] = gpio_o[63:33];
+  
+  assign M2K_CS = SPI_CS;
+  assign M2K_MOSI = SPI_MOSI;
+  assign M2K_MISO = SPI_MISO;
+  assign M2K_SCLK = SPI_SCLK;
+  
   system_wrapper i_system_wrapper (
     .ddr_addr (ddr_addr),
     .ddr_ba (ddr_ba),
@@ -115,15 +131,15 @@ module system_top (
     .fixed_io_ps_srstb (fixed_io_ps_srstb),
     .gpio_i (gpio_i),
     .gpio_o (gpio_o),
-    .spi0_clk_i (),
-    .spi0_clk_o (),
-    .spi0_csn_0_o (),
+    .spi0_clk_i (SPI_SCLK),
+    .spi0_clk_o (SPI_SCLK),
+    .spi0_csn_0_o (SPI_CS),
     .spi0_csn_1_o (),
     .spi0_csn_2_o (),
     .spi0_csn_i (1'b1),
-    .spi0_sdi_i (),
-    .spi0_sdo_i (),
-    .spi0_sdo_o (),
+    .spi0_sdi_i (SPI_MOSI),
+    .spi0_sdo_i (SPI_MISO),
+    .spi0_sdo_o (SPI_MISO),
     .spi1_clk_i (1'b0),
     .spi1_clk_o (),
     .spi1_csn_0_o (),
