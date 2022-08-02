@@ -65,6 +65,20 @@ module system_top (
   inout   [5:0]   led,
 
   // ad5592r SPI configuration interface
+  //
+  //
+
+
+  input          SPI_MOSI,
+  output           SPI_MISO,
+  output           SPI_CLK,
+  output           SPI_CS,
+  output           M2K_MOSI,
+  output 	   M2K_MISO,
+  output 	   M2K_CLK,
+  output           M2K_CS
+    
+
 );
 
   // internal signals
@@ -92,6 +106,16 @@ module system_top (
     .dio_p(led));
 
   assign gpio_i[63:33] = gpio_o[63:33];
+  assign M2K_CLK = SPI_CLK ;
+  assign M2K_MOSI = SPI_MOSI;
+  assign M2K_MISO = SPI_MISO;
+  assign M2K_CS = SPI_CS;
+
+
+
+
+
+
   system_wrapper i_system_wrapper (
     .ddr_addr (ddr_addr),
     .ddr_ba (ddr_ba),
