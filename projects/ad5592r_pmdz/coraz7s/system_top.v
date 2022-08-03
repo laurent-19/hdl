@@ -67,8 +67,8 @@ module system_top (
   //
   //
   
-  input SPI_1_MOSI,
-  output SPI_1_MISO,
+  input SPI_1_MISO,
+  output SPI_1_MOSI,
   output SPI_1_CLK,
   output SPI_1_CS,
   output M2K_MOSI,
@@ -136,7 +136,7 @@ module system_top (
     .fixed_io_ps_srstb (fixed_io_ps_srstb),
     .gpio_i (gpio_i),
     .gpio_o (gpio_o),
-    .spi0_clk_i (SPI_1_CLK),
+    .spi0_clk_i (),
     .spi0_clk_o (SPI_1_CLK),
     .spi0_csn_0_o (SPI_1_CS),
     .spi0_csn_1_o (),
