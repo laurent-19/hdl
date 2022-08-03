@@ -66,12 +66,12 @@ module system_top (
 
   // ad5592r SPI configuration interface
 
-  input           spi_mosi,
-  output          spi_miso,
+  input           spi_miso,
+  output          spi_msoi,
   output          spi_sclk,
   output          spi_cs,
-  output          m2k_mosi,
   output          m2k_miso,
+  output          m2k_mosi,
   output          m2k_sclk,
   output          m2k_cs);
 
@@ -102,8 +102,8 @@ module system_top (
   assign gpio_i[63:33] = gpio_o[63:33];
 
   assign m2k_sclk  = spi_sclk ;
-  assign m2k_mosi  = spi_mosi ;
   assign m2k_miso  = spi_miso ;
+  assign m2k_mosi  = spi_mosi ;
   assign m2k_cs    = spi_cs   ;
 
   system_wrapper i_system_wrapper (
@@ -136,9 +136,9 @@ module system_top (
     .spi0_csn_1_o (),
     .spi0_csn_2_o (),
     .spi0_csn_i (1'b1),
-    .spi0_sdi_i (spi_mosi),
-    .spi0_sdo_i (spi_miso),
-    .spi0_sdo_o (spi_miso),
+    .spi0_sdi_i (spi_miso),
+    .spi0_sdo_i (),
+    .spi0_sdo_o (spi_mosi),
     .spi1_clk_i (1'b0),
     .spi1_clk_o (),
     .spi1_csn_0_o (),
