@@ -1,0 +1,7 @@
+0.7
+2020.2
+Jun 10 2021
+20:04:57
+D:/Vivado/Vivado/2021.1/data/ip/xpm/xpm_VCOMP.vhd,1623391724,vhdl,D:/vivado/home/Serju/hdl/projects/ad5592r_pmdz/coraz7s/ad5592r_coraz7s.gen/sources_1/bd/system/ipshared/276e/hdl/fifo_generator_v13_2_rfs.vhd,,,vcomponents,,,,,,,,
+D:/Vivado/Vivado/2021.1/data/ip/xpm/xpm_cdc/hdl/xpm_cdc.sv,1623391724,systemVerilog,,D:/Vivado/Vivado/2021.1/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv,,xpm_cdc_array_single;xpm_cdc_async_rst;xpm_cdc_gray;xpm_cdc_handshake;xpm_cdc_low_latency_handshake;xpm_cdc_pulse;xpm_cdc_single;xpm_cdc_sync_rst,,axi_vip_v1_1_10;processing_system7_vip_v1_0_12;uvm;xilinx_vip,../../../../ad5592r_coraz7s.gen/sources_1/bd/system/ipshared/ec67/hdl;../../../../ad5592r_coraz7s.gen/sources_1/bd/system/ipshared/f42d/hdl;D:/Vivado/Vivado/2021.1/data/xilinx_vip/include,,,,,
+D:/Vivado/Vivado/2021.1/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv,1623391725,systemVerilog,,,,asym_bwe_bb;xpm_memory_base;xpm_memory_dpdistram;xpm_memory_dprom;xpm_memory_sdpram;xpm_memory_spram;xpm_memory_sprom;xpm_memory_tdpram,,axi_vip_v1_1_10;processing_system7_vip_v1_0_12;uvm;xilinx_vip,../../../../ad5592r_coraz7s.gen/sources_1/bd/system/ipshared/ec67/hdl;../../../../ad5592r_coraz7s.gen/sources_1/bd/system/ipshared/f42d/hdl;D:/Vivado/Vivado/2021.1/data/xilinx_vip/include,,,,,
