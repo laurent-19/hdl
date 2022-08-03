@@ -70,7 +70,7 @@ module system_top (
   output          spi_mosi,
   output          spi_cs,
   output          m2k_miso,
-  output          m2k_mosi,,
+  output          m2k_mosi,
   output          m2k_sclk,
   output          m2k_cs);
   // internal signals
