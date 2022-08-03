@@ -28,8 +28,8 @@
 //      of this repository (LICENSE_ADIBSD), and also on-line at:
 //      https://github.com/analogdevicesinc/hdl/blob/master/LICENSE_ADIBSD
 //      This will allow to generate bit files and not release the source code,
-//      as long as it attaches to an ADI device. 
-//      Autor: Muresan Mihai
+//      as long as it attaches to an ADI device.
+//
 // ***************************************************************************
 // ***************************************************************************
 
@@ -61,18 +61,21 @@ module system_top (
   inout           fixed_io_ps_srstb,
 
   inout   [1:0]   btn,
-  inout   [5:0]   led,
+  inout   [5:0]   led
 
   // ad5592r SPI configuration interface
   //
-  input            SPI_1_MOSI,
-  output           SPI_1_MISO,
-  output           SPI_1_CLK,
-  output           SPI_1_CS,
-  output           M2K_MOSI,
-  output           M2K_MISO,
-  output           M2K_CLK,
-  output           M2K_CS    
+  //
+  
+  input SPI_1_MOSI,
+  output SPI_1_MISO,
+  output SPI_1_CLK,
+  output SPI_1_CS,
+  output M2K_MOSI,
+  output M2K_MISO,
+  output M2K_CLK,
+  output M2K_CS
+  
 );
 
   // internal signals
@@ -100,13 +103,12 @@ module system_top (
     .dio_p(led));
 
   assign gpio_i[63:33] = gpio_o[63:33];
+  assign M2K_CLK = SPI_1_CLK ;
+  assign M2K_MOSI = SPI_1_MOSI;
+  assign M2K_MISO = SPI_1_MISO;
+  assign M2K_CS = SPI_1_CS; 
 
-
-  assign M2K_CLK = SPI_1_CLK ; 
-  assign M2K_MISO = SPI_1_MISO ;
-  assign M2K_MOSI = SPI_1_MOSI ;
-  assign M2K_CS = SPI_1_CS;
-
+  assign gpio_i[63:33] = gpio_o[63:33];
   system_wrapper i_system_wrapper (
     .ddr_addr (ddr_addr),
     .ddr_ba (ddr_ba),
@@ -132,14 +134,14 @@ module system_top (
     .gpio_i (gpio_i),
     .gpio_o (gpio_o),
     .spi0_clk_i (),
-    .spi0_clk_o (),
-    .spi0_csn_0_o (),
+    .spi0_clk_o (SPI_1_CLK),
+    .spi0_csn_0_o (SPI_1_CS),
     .spi0_csn_1_o (),
     .spi0_csn_2_o (),
     .spi0_csn_i (1'b1),
-    .spi0_sdi_i (),
+    .spi0_sdi_i (SPI_1_MISO),
     .spi0_sdo_i (),
-    .spi0_sdo_o (),
+    .spi0_sdo_o (SPI_1_MOSI),
     .spi1_clk_i (1'b0),
     .spi1_clk_o (),
     .spi1_csn_0_o (),
