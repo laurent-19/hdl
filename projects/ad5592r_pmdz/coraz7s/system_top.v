@@ -68,15 +68,15 @@ module system_top (
   // ad5592r SPI configuration interface
 
   // JA
-  output	spi_cs
-  output	spi_mosi
-  input		spi_miso
-  output	spi_clk
+  output	spi_cs,
+  output	spi_mosi,
+  input 	spi_miso,
+  output	spi_clk,
 
-  // JB
-  output	m2k_cs
-  output	m2k_mosi
-  input		m2k_miso
+  // JB - for sniffing
+  output	m2k_cs,
+  output	m2k_mosi,
+  output	m2k_miso,
   output	m2k_clk
 );
 
@@ -104,12 +104,16 @@ module system_top (
     .dio_o(gpio_i[7:2]),
     .dio_p(led));
 
-  assign gpio_i[63:33] = gpio_o[63:33];
+  //project assigned
+  assign gpio_i[63:32] = gpio_o[63:32];
+  
+  //board assigned
+  assign gpio_i[31:8] = gpio_o[31:8];
 
-  assign spi_cs = m2k_cs;
-  assign spi_mosi = m2k_mosi;
-  assign spi_miso = m2k_miso;
-  assign spi_clk = m2k_clk;
+  assign m2k_cs = spi_cs;
+  assign m2k_mosi = spi_mosi;
+  assign m2k_miso = spi_miso;
+  assign m2k_clk = spi_clk;
 
   system_wrapper i_system_wrapper (
     .ddr_addr (ddr_addr),
@@ -138,11 +142,11 @@ module system_top (
     .spi0_clk_i (spi_clk),
     .spi0_clk_o (spi_clk),
     .spi0_csn_0_o (spi_cs),
-    .spi0_csn_1_o (spi_cs),
-    .spi0_csn_2_o (spi_cs),
+    .spi0_csn_1_o (),
+    .spi0_csn_2_o (),
     .spi0_csn_i (1'b1),
     .spi0_sdi_i (spi_miso),
-    .spi0_sdo_i (spi_mosi),
+    .spi0_sdo_i (),
     .spi0_sdo_o (spi_mosi),
     .spi1_clk_i (1'b0),
     .spi1_clk_o (),
