@@ -69,8 +69,8 @@ module system_top (
   //
 
 
-  input          SPI_MOSI,
-  output           SPI_MISO,
+output          SPI_MOSI,
+ input           SPI_MISO,
   output           SPI_CLK,
   output           SPI_CS,
   output           M2K_MOSI,
