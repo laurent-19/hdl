@@ -75,8 +75,7 @@ module system_top (
   output M2K_MISO,
   output M2K_CLK,
   output M2K_CS
-  
-);
+  );
 
   // internal signals
 
@@ -103,12 +102,16 @@ module system_top (
     .dio_p(led));
 
   assign gpio_i[63:33] = gpio_o[63:33];
-  assign M2K_CLK = SPI_1_CLK ;
-  assign M2K_MOSI = SPI_1_MOSI;
-  assign M2K_MISO = SPI_1_MISO;
-  assign M2K_CS = SPI_1_CS; 
 
-  assign gpio_i[63:33] = gpio_o[63:33];
+
+  assign M2K_CLK = SPI_1_CLK ;
+
+  assign M2K_MOSI = SPI_1_MOSI ;
+
+  assign M2K_MISO = SPI_1_MISO ;
+
+  assign M2K_CS = SPI_1_CS ; 
+
   system_wrapper i_system_wrapper (
     .ddr_addr (ddr_addr),
     .ddr_ba (ddr_ba),
@@ -133,7 +136,7 @@ module system_top (
     .fixed_io_ps_srstb (fixed_io_ps_srstb),
     .gpio_i (gpio_i),
     .gpio_o (gpio_o),
-    .spi0_clk_i (),
+    .spi0_clk_i (SPI_1_CLK),
     .spi0_clk_o (SPI_1_CLK),
     .spi0_csn_0_o (SPI_1_CS),
     .spi0_csn_1_o (),
