@@ -61,7 +61,7 @@ module system_top (
   inout           fixed_io_ps_srstb,
 
   inout   [1:0]   btn,
-  inout   [5:0]   led
+  inout   [5:0]   led,
 
   // ad5592r SPI configuration interface
   //
