@@ -67,13 +67,13 @@ module system_top (
   // ad5592r SPI configuration interface
   output          ja_spi_ss,
   output          ja_spi_mosi,
-  output          ja_spi_miso,
+  input           ja_spi_miso,
   output          ja_spi_sck,
 
   output          jb_spi_ss,
   output          jb_spi_mosi,
   output          jb_spi_miso,
-  output          jb_spi_sck,
+  output          jb_spi_sck
 );
 
   // internal signals
@@ -101,6 +101,12 @@ module system_top (
     .dio_p(led));
 
   assign gpio_i[63:33] = gpio_o[63:33];
+
+  assign jb_spi_ss   = ja_spi_ss;
+  assign jb_spi_mosi = ja_spi_mosi;
+  assign jb_spi_miso = ja_spi_miso;
+  assign jb_spi_sck  = ja_spi_sck;
+
   system_wrapper i_system_wrapper (
     .ddr_addr (ddr_addr),
     .ddr_ba (ddr_ba),
@@ -125,15 +131,15 @@ module system_top (
     .fixed_io_ps_srstb (fixed_io_ps_srstb),
     .gpio_i (gpio_i),
     .gpio_o (gpio_o),
-    .spi0_clk_i (),
-    .spi0_clk_o (),
-    .spi0_csn_0_o (),
+    .spi0_clk_i (ja_spi_sck),
+    .spi0_clk_o (ja_spi_sck),
+    .spi0_csn_0_o (ja_spi_ss),
     .spi0_csn_1_o (),
     .spi0_csn_2_o (),
     .spi0_csn_i (1'b1),
-    .spi0_sdi_i (),
+    .spi0_sdi_i (ja_spi_miso),
     .spi0_sdo_i (),
-    .spi0_sdo_o (),
+    .spi0_sdo_o (ja_spi_mosi),
     .spi1_clk_i (1'b0),
     .spi1_clk_o (),
     .spi1_csn_0_o (),
