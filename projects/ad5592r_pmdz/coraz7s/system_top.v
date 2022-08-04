@@ -66,8 +66,8 @@ module system_top (
 
   // ad5592r SPI configuration interface
   //
-   input          spi_mosi,
-  output          spi_miso,
+   input          spi_miso,
+  output          spi_mosi,
   output          spi_sclk,
   output          spi_cs,
   output          m2k_mosi,
