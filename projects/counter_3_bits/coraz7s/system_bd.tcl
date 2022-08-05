@@ -10,3 +10,5 @@ set sys_cstring "sys rom custom string placeholder"
 sysid_gen_sys_init_file $sys_cstring
 
 source ../common/counter_3_bits_bd.tcl
+
+

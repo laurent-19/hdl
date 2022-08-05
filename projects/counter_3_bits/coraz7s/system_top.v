@@ -61,13 +61,19 @@ module system_top (
   inout           fixed_io_ps_srstb,
 
   inout   [1:0]   btn,
-  inout   [5:0]   led
+  inout   [5:0]   led,
 
   // counter_pins 
+  input clk,
+  input reset_btn,
+  output [2:0] counter_leds
 );
 
   // internal signals
-
+  
+  //wire reset;
+  //assign reset=btn[0];
+  
   wire    [63:0]  gpio_i;
   wire    [63:0]  gpio_o;
   wire    [63:0]  gpio_t;
@@ -89,6 +95,7 @@ module system_top (
     .dio_i(gpio_o[7:2]),
     .dio_o(gpio_i[7:2]),
     .dio_p(led));
+
 
   assign gpio_i[63:33] = gpio_o[63:33];
   assign gpio_i[32:8]  = gpio_o[32:8];
@@ -134,7 +141,11 @@ module system_top (
     .spi1_csn_i (1'b1),
     .spi1_sdi_i (1'b0),
     .spi1_sdo_i (1'b0),
-    .spi1_sdo_o ());
+    .spi1_sdo_o (),
+    .clk(clk),
+    .reset(reset_btn),
+    .counter_leds(counter_leds)
+    );
 
 endmodule
 
