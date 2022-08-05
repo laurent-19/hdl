@@ -38,47 +38,23 @@
 `timescale 1ns/100ps
 
 module debouncer (
-  input     in,
-  input     clk,
-  output    debounced_out
+  input       in,
+  input       clk,
+  output reg  debounced_out
 );
 
-reg [26:0] nb = 0;
+reg [2:0]  shift;
 
-wire       slow_clk;
-wire       Q0;
-wire       Q1; 
-wire       Q2;
-wire       Q2_bar;
+//shift: wait for stable
 
-assign Q2_bar = ~Q2;
-assign debounced_out = Q1 & Q2_bar;
-
-d_flip_flop d0(
-   .clk(slow_clk),
-   .reset(1'b0),
-   .d(Q0),
-   .q(Q1));
-
-d_flip_flop d1(
-   .clk(slow_clk),
-   .reset(1'b0),
-   .d(Q0),
-   .q(Q1));
-
-d_flip_flop d2(
-   .clk(slow_clk),
-   .reset(1'b0),
-   .d(Q0),
-   .q(Q1));
-
-// clock divider 
-
-assign slow_clk = (nb < 125000)?1'b0:1'b1;
-
-always @(posedge clk)
+always @ (posedge clk)
 begin
-    nb <= (nb>=249999)?0:nb+1;
-    
+  shift <= {shift,in}; // N shift register
+  if(~|shift)
+    debounced_out <= 1'b0;
+  else if(&shift)
+    debounced_out <= 1'b1;
+  else debounced_out <= debounced_out;
 end
+
 endmodule

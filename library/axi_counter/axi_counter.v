@@ -45,6 +45,9 @@ module axi_counter (
   output              led1,
   output              led2,
 
+  output             debounced_reset_ila,
+  output             clk_1hz_ila,
+
   // axi interface
 
   input                   s_axi_aclk,
@@ -92,47 +95,62 @@ module axi_counter (
   wire q0;
   wire q1;
   wire q2;
+  wire d0;
+  wire d1;
+  wire d2;
   wire clk_1hz;
+  
 
-  reg [26:0] counter_divider = 27'b0;
+
+
+  reg [27:0] counter_divider = 28'b0;
   reg divided_clk = 1'b0;
 
   // signal name changes
 
-  assign up_clk  = s_axi_aclk;
-  assign up_rstn = s_axi_aresetn;
   assign led0 = q0; 
   assign led1 = q1;
   assign led2 = q2; 
+  assign d0 = ~q0;
+  assign d1 = q0 ^ q1;
+  assign d2 = q2 ^ (q1 & q0);
+  assign clk_1hz = divided_clk;
+  assign debounced_reset_ila = debounced_reset;
+  assign clk_1hz_ila = clk_1hz;
+  
 
   //counter core
 
  debouncer debouncer_reset(
-   .clk(counter_clk),
+   .clk(clk_1hz),
    .in(counter_reset),
    .debounced_out(debounced_reset));
 
  d_flip_flop led_d0(
-   .clk(divided_clk),
+   .clk(clk_1hz),
    .reset(debounced_reset),
-   .d(q2),
+   .d(d0),
    .q(q0));
 
 d_flip_flop led_d1(
-   .clk(divided_clk),
+   .clk(clk_1hz),
    .reset(debounced_reset),
-   .d(q0),
+   .d(d1),
    .q(q1));
 
 d_flip_flop led_d2(
-   .clk(divided_clk),
+   .clk(clk_1hz),
    .reset(debounced_reset),
-   .d(q1),
+   .d(d2),
    .q(q2));
 
-always @(posedge counter_clk) begin : clk_divider
-    counter_divider <= (counter_divider>=1999)?0:counter_divider+1;
-    divided_clk <= (counter_divider < 1000)?1'b0:1'b1;  
+always @(posedge counter_clk)
+begin
+   counter_divider <= counter_divider + 28'd1;
+   if(counter_divider>=124999999) begin
+    counter_divider <= 28'b0;
+   end
+   divided_clk <= (counter_divider<62500000)?1'b1:1'b0;
 end
 
 endmodule

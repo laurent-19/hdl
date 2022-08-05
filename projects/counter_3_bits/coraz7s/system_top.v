@@ -65,7 +65,8 @@ module system_top (
 
   // counter_pins SPI configuration interface
 
-
+  input           counter_clk,
+  input           reset_btn,
   output          led0,
   output          led1,
   output          led2);
@@ -98,7 +99,8 @@ module system_top (
   assign gpio_i[32:8]  = gpio_o[32:8];
 
   system_wrapper i_system_wrapper (
-    .reset_in(btn[0]),
+    .counter_clk(counter_clk),
+    .reset_in(reset_btn),
     .led0(led0),
     .led1(led1),
     .led2(led2),
