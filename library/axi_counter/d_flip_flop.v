@@ -35,10 +35,24 @@
 // This is the LVDS/DDR interface, note that overrange is independent of data path,
 // software will not be able to relate overrange to a specific sample!
 
+// ADI Summer School 
+// Rising edge D flip flop with Synchronous Reset high
+// Author: Cusco Ana-Maria
 `timescale 1ns/100ps
 
 module d_flip_flop (
-
+input clk, // clock input 
+input D, // Data input 
+input sync_reset, // asynchronous reset high level
+output reg Q // output Q 
 );
 
-endmodule
+always @(posedge clk) 
+begin
+ if(sync_reset==1'b1)
+  Q <= 1'b0; 
+ else 
+  Q <= D; 
+end 
+endmodule 
+

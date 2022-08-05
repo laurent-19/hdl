@@ -34,11 +34,29 @@
 // ***************************************************************************
 // This is the LVDS/DDR interface, note that overrange is independent of data path,
 // software will not be able to relate overrange to a specific sample!
-
+// ADI Summer School 
+// Debouncer
+// Author: Cusco Ana-Maria
 `timescale 1ns/100ps
 
 module debouncer (
-
+    input clk,
+    input in,
+    output reg debounced_out 
 );
+
+reg [2:0]  shift;
+
+//shift: wait for stable
+
+always @ (posedge clk)
+begin
+  shift <= {shift,in}; // N shift register
+  if(~|shift)
+    debounced_out <= 1'b0;
+  else if(&shift)
+    debounced_out <= 1'b1;
+  else debounced_out <= debounced_out;
+end
 
 endmodule

@@ -38,7 +38,11 @@
 module axi_counter (
 
   // counter ports 
-
+  input rst,
+  input clk,
+  output [2:0] leds,
+  
+  
   // axi interface
 
   input                   s_axi_aclk,
@@ -65,29 +69,46 @@ module axi_counter (
 );
 
   // internal clocks and resets
-
-  // counter wires
-
+  reg clk_div_1Hz;
+  wire reset;
+  // counter wires - 3 bits counter (3 Flip Flops)
+  wire D0;
+  wire Q0;
+  wire D1;
+  wire Q1;
+  wire D2;
+  wire Q2;
   // signal name changes
 
-  //counter core
+ debouncer debouncer_reset(clk_div_1Hz,rst,reset);
+ 
+//counter core
+ assign D0=~Q0;
+ assign D1=Q0^Q1; //xor operator
+ assign D2=(Q0&Q1)^Q2;
 
- debouncer debouncer_reset(
-  );
-
- d_flip_flop led_d0(
-   );
-
-d_flip_flop led_d1(
-  );
-
-d_flip_flop led_d2(
-  );
+ d_flip_flop led_d0(clk_div_1Hz, D0, reset, Q0);
+ d_flip_flop led_d1(clk_div_1Hz, D1, reset, Q1);
+ d_flip_flop led_d2(clk_div_1Hz, D2, reset, Q2);
+ 
+ assign leds[0]=Q0;
+ assign leds[1]=Q1;
+ assign leds[2]=Q2;
 
 // clock divider 
+reg[27:0] counter=28'd0;
+parameter DIVISOR = 28'd150000000;
 
-always @(posedge ) begin : clk_divider
-  
+// The frequency of the input clk_in divided by DIVISOR
+// The frequency of the output clk_out = 150Mhz/150.000.000 = 1Hz
+
+always @(posedge clk) 
+begin 
+ counter <= counter + 28'd1;
+ if(counter>=(DIVISOR-1))
+  counter <= 28'd0;
+
+ clk_div_1Hz <= (counter<DIVISOR/2)?1'b1:1'b0;
 end
 
 endmodule
